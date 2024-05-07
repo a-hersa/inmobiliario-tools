@@ -5,13 +5,20 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light dark" />
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/pico.min.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 <title>Calculadora de rentabilidad</title>
 {% endblock %}
 
 {% block body %}
 <main class="container">
-    <h1>Hello world!</h1>
+    <h1>Calculadora de rentabilidad</h1>
+    <form action="{{url_for('calculadora')}}" method="POST">
+        <fieldset role="group">
+          <input type="number" name="url" placeholder="Introduce una URL válida" />
+          <input type="submit" value="Calcular" />
+        </fieldset>
+      </form>
 </main>
 {% endblock %}
 

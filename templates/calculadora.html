@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="es">
+
+{% block head %}
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark" />
+<link rel="stylesheet" href="{{ url_for('static', filename='css/pico.min.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+<title>Calculadora de rentabilidad</title>
+{% endblock %}
+
+{% block body %}
+<main class="container">
+    <h1>Calculadora de rentabilidad</h1>
+    <div class="grid">
+      <div>
+        <h2>La vivienda</h2>
+        <p>Nombre</p>
+        <p>ID</p>
+      </div>
+      <div>
+        <h2>Coste de compra</h2>
+        <div class="form-group">
+          <label for="precio_compra">Precio de compra:</label>
+          <input type="number" id="precio_compra" name="precio_compra" placeholder="Introduce el precio de compra" value="{{precio_compra}}">
+        </div>
+        <div class="form-group">
+          <label for="precio_compra">Impuesto ITP:</label>
+          <p>{{itp}}</p>
+          <!-- <input type="text" id="precio-compra" name="precio-compra" placeholder="Introduce el precio de compra"> -->
+        </div>
+      </div>
+      <div></div>
+    </div>
+</main>
+{% endblock %}
+
+</html>
