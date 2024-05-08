@@ -7,30 +7,35 @@
 <meta name="color-scheme" content="light dark" />
 <link rel="stylesheet" href="{{ url_for('static', filename='css/pico.min.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+<link rel="shortcut icon" href="{{ url_for('static', filename='icon.png') }}">
 <title>Calculadora de rentabilidad</title>
 {% endblock %}
 
 {% block body %}
 <main class="container">
-    <h1>Calculadora de rentabilidad</h1>
+    <h4>Calculadora de rentabilidad</h4>
     <div class="grid">
       <div>
-        <h2>La vivienda</h2>
-        <p>Nombre</p>
-        <p>ID</p>
+        <hgroup>
+          <h5>La vivienda</h5>
+          <h6>Nombre</h6><span>{{datos[0]}}</span>
+          <h6>URL</h6><p>{{url}}</p>
+          <h6>Precio</h6><span>{{datos[1]}}</span>
+          <h6>Metros</h6><span>{{datos[2]}}</span><span> m²</span>
+        </hgroup>
+        <hgroup>
+          <h5>Coste de compra</h5>
+          <div class="form-group">
+            <label for="precio_compra">Precio de compra</label>
+            <input type="number" id="precio_compra" name="precio_compra" placeholder="Introduce el precio de compra" value="{{precio_compra}}">
+          </div>
+          <div class="form-group">
+            <label for="precio_compra">ITP</label>
+            <p></p>
+          </div>
+        </hgroup>
       </div>
-      <div>
-        <h2>Coste de compra</h2>
-        <div class="form-group">
-          <label for="precio_compra">Precio de compra:</label>
-          <input type="number" id="precio_compra" name="precio_compra" placeholder="Introduce el precio de compra" value="{{precio_compra}}">
-        </div>
-        <div class="form-group">
-          <label for="precio_compra">Impuesto ITP:</label>
-          <p>{{itp}}</p>
-          <!-- <input type="text" id="precio-compra" name="precio-compra" placeholder="Introduce el precio de compra"> -->
-        </div>
-      </div>
+      <div></div>
       <div></div>
     </div>
 </main>

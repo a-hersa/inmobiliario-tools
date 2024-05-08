@@ -1,4 +1,5 @@
 from flask import Flask, request, render_template
+from src.scraper import scraper
 
 app=Flask(__name__)
 
@@ -9,12 +10,12 @@ def home_page():
 @app.route('/calculadora', methods=['GET','POST'])
 def calculadora():
     if request.method=='GET': 
-        return render_template('form.html')
+        return render_template('calculadora.html')
 
     else:
         url=request.form['url']
-        itp=int(int(50000)*0.1)
-        return render_template('calculadora.html', itp=itp)
+        datos = scraper(url)
+        return render_template('calculadora.html', url=url, datos=datos)
 
 if __name__=='__main__':
     # app.run(host='0.0.0.0',debug=True)

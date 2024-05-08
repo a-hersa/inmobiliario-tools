@@ -12,6 +12,7 @@ __pycache__/
 
 # Calculadora de rentabilidad
 *.xlsx
+test.ipynb
 
 # VSCode
 .vscode

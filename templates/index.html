@@ -7,6 +7,7 @@
 <meta name="color-scheme" content="light dark" />
 <link rel="stylesheet" href="{{ url_for('static', filename='css/pico.min.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+<link rel="shortcut icon" href="{{ url_for('static', filename='icon.png') }}">
 <title>Calculadora de rentabilidad</title>
 {% endblock %}
 
@@ -15,7 +16,7 @@
     <h1>Calculadora de rentabilidad</h1>
     <form action="{{url_for('calculadora')}}" method="POST">
         <fieldset role="group">
-          <input type="number" name="url" placeholder="Introduce una URL válida" />
+          <input type="url" name="url" placeholder="Introduce una URL válida" />
           <input type="submit" value="Calcular" />
         </fieldset>
       </form>
