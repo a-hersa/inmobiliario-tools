@@ -17,26 +17,61 @@
     <div class="grid">
       <div>
         <hgroup>
-          <h5>La vivienda</h5>
+          <h4>La vivienda</h4>
           <h6>Nombre</h6><span>{{datos[0]}}</span>
           <h6>URL</h6><p>{{url}}</p>
           <h6>Precio</h6><span>{{datos[1]}}</span>
           <h6>Metros</h6><span>{{datos[2]}}</span><span> m²</span>
         </hgroup>
         <hgroup>
-          <h5>Coste de compra</h5>
-          <div class="form-group">
-            <label for="precio_compra">Precio de compra</label>
-            <input type="number" id="precio_compra" name="precio_compra" placeholder="Introduce el precio de compra" value="{{precio_compra}}">
-          </div>
-          <div class="form-group">
-            <label for="precio_compra">ITP</label>
-            <p></p>
-          </div>
+          <h4>Coste de compra</h4>
+          <form oninput="calculo_itp.value = parseInt(parseInt(p_compra.value)*parseFloat(0.1))">
+            <hgroup>
+              <h6 for="p_compra">Precio de compra</h6>
+              <input type="number" id="p_compra" name="p_compra" placeholder="Introduce el precio de compra" value="{{datos[1]}}">
+              <h6>ITP</h6><output name="calculo_itp"></output>
+              <h6>Reforma</h6><span>Placeholder</span>
+              <h6>Notaria</h6><span>Placeholder</span>
+              <h6>Registro</h6><span>Placeholder</span>
+              <h6>Comisión agencia</h6><span>Placeholder</span>
+              <h6>Tasación</h6><span>Placeholder</span>
+          </hgroup>
+          </form>
         </hgroup>
       </div>
-      <div></div>
-      <div></div>
+      <div>
+        <hgroup>
+          <h4>Gastos anuales</h4>
+          <h6>IBI</h6><span>Placeholder</span>
+          <h6>Basuras</h6><span>Placeholder</span>
+          <h6>Comunidad</h6><span>Placeholder</span>
+          <h6>Seguros</h6><span>Placeholder</span>
+        </hgroup>
+        <hgroup>
+          <h4>Ingresos anuales</h4><span>Placeholder</span>
+          <h6>Cuota alquiler</h6><span>Placeholder</span>
+        </hgroup>
+        <hgroup>
+          <h4>Hipoteca</h4>
+          <h6>% Financiado</h6><span>Placeholder</span>
+          <h6>Capital a aportar</h6><span>Placeholder</span>
+          <h6>Plazo (años)</h6><span>Placeholder</span>
+          <h6>Tiipo de interés</h6><span>Placeholder</span>
+          <h6>Cuota a pagar</h6><span>Placeholder</span>
+          <h6>Intereses (promedio)</h6><span>Placeholder</span>
+          <h6>Amortización (promedio)</h6><span>Placeholder</span>
+        </hgroup>
+      </div>
+      <div>
+        <hgroup>
+          <h4>Rentabilidad</h4>
+          <output name="r_bruta"></output>
+          <output name="r_bruta"></output>
+          <output name="c_flow"></output>
+          <output name="c_oncash"></output>
+          <output name="roce"></output>
+        </hgroup>
+      </div>
     </div>
 </main>
 {% endblock %}
