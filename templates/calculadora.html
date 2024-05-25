@@ -25,61 +25,135 @@
         </hgroup>
         <hgroup>
           <h4>Coste de compra</h4>
-          <form oninput="calculo_itp.value = parseInt(parseInt(p_compra.value)*parseFloat(0.1))">
+          <form>
             <hgroup>
-              <h6 for="p_compra">Precio de compra</h6>
-              <input type="number" id="p_compra" name="p_compra" placeholder="Introduce el precio de compra" value="{{datos.p_compra}}">
-              <h6>ITP</h6><output name="calculo_itp"></output>
-              <h6>Reforma</h6><span>{{datos.reforma}}</span>
-              <h6>Notaria</h6><span>{{datos.notaria}}</span>
-              <h6>Registro</h6><span>{{datos.registro}}</span>
-              <h6>Comisión agencia</h6><span>{{datos.agencia}}</span>
-              <h6>Tasación</h6><span>{{datos.agencia}}</span>
-          </hgroup>
+              <h6>Precio de compra</h6><input type="number" id="p_compra" value="{{datos.p_compra}}">
+              <h6>ITP (10% Catalunya)</h6><input type="number" id="itp" value="{{datos.itp}}">
+              <h6>Reforma</h6><input type="number" id="reforma" value="{{datos.reforma}}">
+              <h6>Notaria</h6><input type="number" id="notaria" value="{{datos.notaria}}">
+              <h6>Registro</h6><input type="number" id="registro" value="{{datos.registro}}"">
+              <h6>Comisión agencia</h6><input type="number" id="agencia" value="{{datos.agencia}}">
+              <h6>Tasación</h6><input type="number" id="tasacion" value="{{datos.agencia}}">
+            </hgroup>
           </form>
         </hgroup>
       </div>
       <div>
         <hgroup>
           <h4>Gastos anuales</h4>
-          <h6>IBI</h6><span>{{datos.ibi}}</span>
-          <h6>Basuras</h6><span>{{datos.basuras}}</span>
-          <h6>Comunidad</h6><span>{{datos.comunidad}}</span>
-          <h6>Seguros</h6><span>{{datos.seguros}}</span>
+          <form>
+            <hgroup>
+              <h6>IBI</h6><input type="number" id="ibi" value="{{datos.ibi}}">
+              <h6>Basuras</h6><input type="number" id="basuras" value="{{datos.basuras}}">
+              <h6>Comunidad</h6><input type="number" id="comunidad" value="{{datos.comunidad}}">
+              <h6>Seguros</h6><input type="number" id="seguros" value="{{datos.seguros}}">
+            </hgroup>
+          </form>
         </hgroup>
         <hgroup>
           <h4>Ingresos anuales</h4>
-          <h6>Cuota alquiler</h6><span>{{datos.alquiler}}</span>
+          <form>
+            <hgroup>
+              <h6>Cuota alquiler</h6><input type="number" id="alquiler" value="{{datos.alquiler}}">
+            </hgroup>
+          </form>
         </hgroup>
         <hgroup>
           <h4>Hipoteca</h4>
-          <h6>% Financiado</h6><span>{{datos.financiado}}</span>
-          <h6>Hipoteca</h6><span>{{datos.hipoteca}}</span>
-          <h6>Capital a aportar</h6><span>{{datos.a_aportar}}</span>
-          <h6>Plazo (años)</h6><span>{{datos.plazo}}</span>
-          <h6>Tipo de interés</h6><span>{{datos.interes_anuales}}</span>
-          <h6>Cuota a pagar</h6><span>{{datos.cuota}}</span>
-          <h6>Intereses (promedio)</h6><span>{{datos.cuota_intereses}}</span>
-          <h6>Amortización (promedio)</h6><span>{{datos.cuota_amortizacion}}</span>
+          <form>
+            <hgroup>
+              <h6>% Financiado</h6><input type="number" id="financiado" value="{{datos.financiado}}">
+              <h6>Hipoteca</h6><input type="number" id="hipoteca" readonly="readonly" value="{{datos.hipoteca}}">
+              <h6>Capital a aportar</h6><input type="number" id="a_aportar" readonly="readonly" value="{{datos.a_aportar}}">
+              <h6>Plazo (años)</h6><input type="number" id="plazo" value="{{datos.plazo}}">
+              <h6>Tipo de interés</h6><input type="number" id="intereses_anuales" value="{{ (datos.interes_anuales*100) | round(1) }}"><span>%</span>
+              <h6>Cuota a pagar</h6><input type="number" id="cuota" readonly="readonly" value="{{ datos.cuota | int }}">
+              <h6>Intereses (promedio)</h6><input type="number" id="cuota_intereses" readonly="readonly" value="{{ datos.cuota_intereses | int }}">
+              <h6>Amortización (promedio)</h6><input type="number" id="cuota_amortizacion" readonly="readonly" value="{{ datos.cuota_amortizacion | int }}">
+            </hgroup>
+          </form>
         </hgroup>
       </div>
       <div>
         <hgroup>
           <h4>Rentabilidad</h4>
-          <h6>Rentabilidad bruta</h6><span>{{datos.r_bruta}}</span>
-          <output name="r_bruta"></output>
-          <h6>Rentabilidad neta</h6><span>{{datos.r_neta}}</span>
-          <output name="r_neta"></output>
-          <h6>Cash flow</h6><span>{{datos.c_flow}}</span>
-          <output name="c_flow"></output>
-          <h6>Cash on cash</h6><span>{{datos.c_oncash}}</span>
-          <output name="c_oncash"></output>
-          <h6>ROCE</h6><span>{{datos.roce}}</span>
-          <output name="roce"></output>
+          <form>
+            <hgroup>
+              <h6>Rentabilidad bruta</h6><input type="number" id="r_bruta" readonly="readonly" value="{{ (datos.r_bruta*100) | round(1) }}">
+              <h6>Rentabilidad neta</h6><input type="number" id="r_neta" readonly="readonly" value="{{ (datos.r_neta*100) | round(1) }}">
+              <h6>Cash flow</h6><input type="number" id="c_flow" readonly="readonly" value="{{ datos.c_flow | round }}">
+              <h6>Cash on cash</h6><input type="number" id="c_oncash" readonly="readonly" value="{{ (datos.c_oncash*100) | round(1) }}">
+              <h6>ROCE</h6><input type="number" id="roce" readonly="readonly" value="{{ (datos.roce*100) | round(1) }}">
+            </hgroup>
+          </form>
         </hgroup>
       </div>
     </div>
+    <form action="{{url_for('calculadora')}}" method="GET"><input type="submit" value="Refrescar"/></form>
 </main>
+<script>
+  document.getElementById("p_compra").oninput = function() {calculadora()};
+  document.getElementById("itp").oninput = function() {calculadora()};
+  document.getElementById("reforma").oninput = function() {calculadora()};
+  document.getElementById("notaria").oninput = function() {calculadora()};
+  document.getElementById("registro").oninput = function() {calculadora()};
+  document.getElementById("agencia").oninput = function() {calculadora()};
+  document.getElementById("tasacion").oninput = function() {calculadora()};
+  document.getElementById("ibi").oninput = function() {calculadora()};
+  document.getElementById("basuras").oninput = function() {calculadora()};
+  document.getElementById("comunidad").oninput = function() {calculadora()};
+  document.getElementById("seguros").oninput = function() {calculadora()};
+  document.getElementById("alquiler").oninput = function() {calculadora()};
+  document.getElementById("financiado").oninput = function() {calculadora()};
+  document.getElementById("plazo").oninput = function() {calculadora()};
+  document.getElementById("intereses_anuales").oninput = function() {calculadora()};
+
+  function calculadora() {
+    var p_compra = document.getElementById("p_compra");
+    var itp = document.getElementById("itp");
+    itp.value = parseInt(parseInt(p_compra.value)*parseFloat(0.1));
+    var reforma = document.getElementById("reforma");
+    var notaria = document.getElementById("notaria");
+    var registro = document.getElementById("registro");
+    var agencia = document.getElementById("agencia");
+    var tasacion = document.getElementById("tasacion");
+    var total_compra = parseInt(p_compra.value)+parseInt(itp.value)+parseInt(reforma.value)+parseInt(notaria.value)+parseInt(registro.value)+parseInt(agencia.value)+parseInt(tasacion.value);
+    var ibi = document.getElementById("ibi");
+    var basuras = document.getElementById("basuras");
+    var comunidad = document.getElementById("comunidad");
+    var seguros = document.getElementById("seguros");
+    var total_gastos = parseInt(ibi.value)+parseInt(basuras.value)+parseInt(comunidad.value)+parseInt(seguros.value);
+    var alquiler = document.getElementById("alquiler");
+    var financiado = document.getElementById("financiado");
+    var hipoteca = document.getElementById("hipoteca");
+    hipoteca.value = parseInt((financiado.value/100)*p_compra.value);
+    var a_aportar = document.getElementById("a_aportar");
+    a_aportar.value = parseInt(total_compra - hipoteca.value);
+    var plazo = document.getElementById("plazo");
+    var intereses_anuales = document.getElementById("intereses_anuales");
+    var intereses_mensuales = parseFloat(parseFloat(intereses_anuales.value) / 12);
+    var cuota = document.getElementById("cuota");
+    cuota.value = parseInt(parseInt(hipoteca.value)*((((1+(parseFloat(intereses_mensuales/100)))**(parseInt(plazo.value)*12))*(parseFloat(intereses_mensuales/100)))/(((1+(parseFloat(intereses_mensuales/100)))**(parseInt(plazo.value)*12))-1)));
+    var cuota_intereses = document.getElementById("cuota_intereses");
+    cuota_intereses.value = parseInt(((parseInt(cuota.value)*12*parseInt(plazo.value))-parseInt(hipoteca.value))/(parseInt(plazo.value)*12));
+    var cuota_amortizacion = document.getElementById("cuota_amortizacion");
+    cuota_amortizacion.value = parseInt(parseInt(cuota.value)-parseInt(cuota_intereses.value));
+    console.log(parseInt(p_compra.value));
+    console.log(parseInt(itp.value));
+    console.log(total_compra);
+    console.log(total_gastos);
+    var r_bruta = document.getElementById("r_bruta");
+    r_bruta.value = (((parseInt(alquiler.value)*12)/total_compra)*100).toFixed(1);
+    var r_neta = document.getElementById("r_neta");
+    r_neta.value = parseFloat((((parseInt(alquiler.value)*12)-total_gastos-(parseInt(cuota_intereses.value)*12))/total_compra)*100).toFixed(1);
+    var c_flow = document.getElementById("c_flow");
+    c_flow.value = parseInt(parseInt(alquiler.value)-parseInt(cuota.value)-(parseFloat(total_gastos/12)));
+    var c_oncash = document.getElementById("c_oncash");
+    c_oncash.value = parseFloat(((parseInt(c_flow.value)*12)/parseInt(a_aportar.value))*100).toFixed(1);
+    var roce = document.getElementById("roce");
+    roce.value = parseFloat((12*(parseInt(c_flow.value)+parseInt(cuota_amortizacion.value))/parseInt(a_aportar.value))*100).toFixed(1);
+  }
+</script>
 {% endblock %}
 
 </html>
