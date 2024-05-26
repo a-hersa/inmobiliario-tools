@@ -48,7 +48,7 @@
             </hgroup>
           </hgroup>
           <hgroup>
-            <h4>Ingresos anuales</h4>
+            <h4>Ingresos mensuales</h4>
             <hgroup>
               <h6>Cuota alquiler</h6><input type="number" id="alquiler" name="alquiler" value="{{datos.alquiler}}">
             </hgroup>
@@ -60,7 +60,7 @@
               <h6>Hipoteca</h6><input type="number" id="hipoteca" readonly="readonly" value="{{datos.hipoteca}}">
               <h6>Capital a aportar</h6><input type="number" id="a_aportar" readonly="readonly" value="{{datos.a_aportar}}">
               <h6>Plazo (años)</h6><input type="number" id="plazo"  name="plazo"value="{{datos.plazo}}">
-              <h6>Tipo de interés</h6><input type="number" id="intereses_anuales" name="intereses_anuales" value="{{ (datos.interes_anuales*100) | round(1) }}"><span>%</span>
+              <h6>Tipo de interés</h6><input type="float" id="intereses_anuales" name="intereses_anuales" value="{{ (datos.interes_anuales*100) | round(1) }}"><span>%</span>
               <h6>Cuota a pagar</h6><input type="number" id="cuota" readonly="readonly" value="{{ datos.cuota | int }}">
               <h6>Intereses (promedio)</h6><input type="number" id="cuota_intereses" readonly="readonly" value="{{ datos.cuota_intereses | int }}">
               <h6>Amortización (promedio)</h6><input type="number" id="cuota_amortizacion" readonly="readonly" value="{{ datos.cuota_amortizacion | int }}">
