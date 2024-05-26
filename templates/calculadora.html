@@ -14,82 +14,74 @@
 {% block body %}
 <main class="container">
     <h4>Calculadora de rentabilidad</h4>
-    <div class="grid">
-      <div>
-        <hgroup>
-          <h4>La vivienda</h4>
-          <h6>Nombre</h6><span>{{datos.nombre}}</span>
-          <h6>URL</h6><p>{{url}}</p>
-          <h6>Precio</h6><span>{{datos.precio}}</span>
-          <h6>Metros</h6><span>{{datos.metros}}</span><span> m²</span>
-        </hgroup>
-        <hgroup>
-          <h4>Coste de compra</h4>
-          <form>
+    <form action="{{url_for('descargar')}}" method="POST">
+      <div class="grid">
+        <div>
+          <hgroup>
+            <h4>La vivienda</h4>
+            <h6>Nombre</h6><input readonly="readonly" name="nombre" value="{{datos.nombre}}">
+            <h6>URL</h6><input readonly="readonly" name="url" value="{{url}}">
+            <h6>Precio</h6><input readonly="readonly" name="precio" value="{{datos.precio}}">
+            <h6>Metros</h6><input readonly="readonly" name="metros" value="{{datos.metros}}">
+          </hgroup>
+          <hgroup>
+            <h4>Coste de compra</h4>
             <hgroup>
-              <h6>Precio de compra</h6><input type="number" id="p_compra" value="{{datos.p_compra}}">
-              <h6>ITP (10% Catalunya)</h6><input type="number" id="itp" value="{{datos.itp}}">
-              <h6>Reforma</h6><input type="number" id="reforma" value="{{datos.reforma}}">
-              <h6>Notaria</h6><input type="number" id="notaria" value="{{datos.notaria}}">
-              <h6>Registro</h6><input type="number" id="registro" value="{{datos.registro}}"">
-              <h6>Comisión agencia</h6><input type="number" id="agencia" value="{{datos.agencia}}">
-              <h6>Tasación</h6><input type="number" id="tasacion" value="{{datos.agencia}}">
+              <h6>Precio de compra</h6><input type="number" id="p_compra" name="p_compra" value="{{datos.p_compra}}">
+              <h6>ITP (10% Catalunya)</h6><input type="number" id="itp" name="itp" value="{{datos.itp}}">
+              <h6>Reforma</h6><input type="number" id="reforma" name="reforma" value="{{datos.reforma}}">
+              <h6>Notaria</h6><input type="number" id="notaria" name="notaria" value="{{datos.notaria}}">
+              <h6>Registro</h6><input type="number" id="registro" name="registro" value="{{datos.registro}}"">
+              <h6>Comisión agencia</h6><input type="number" id="agencia" name="agencia" value="{{datos.agencia}}">
+              <h6>Tasación</h6><input type="number" id="tasacion" name="tasacion" value="{{datos.agencia}}">
             </hgroup>
-          </form>
-        </hgroup>
-      </div>
-      <div>
-        <hgroup>
-          <h4>Gastos anuales</h4>
-          <form>
+          </hgroup>
+        </div>
+        <div>
+          <hgroup>
+            <h4>Gastos anuales</h4>
             <hgroup>
-              <h6>IBI</h6><input type="number" id="ibi" value="{{datos.ibi}}">
-              <h6>Basuras</h6><input type="number" id="basuras" value="{{datos.basuras}}">
-              <h6>Comunidad</h6><input type="number" id="comunidad" value="{{datos.comunidad}}">
-              <h6>Seguros</h6><input type="number" id="seguros" value="{{datos.seguros}}">
+              <h6>IBI</h6><input type="number" id="ibi" name="ibi" value="{{datos.ibi}}">
+              <h6>Basuras</h6><input type="number" id="basuras" name="basuras" value="{{datos.basuras}}">
+              <h6>Comunidad</h6><input type="number" id="comunidad" name="comunidad" value="{{datos.comunidad}}">
+              <h6>Seguros</h6><input type="number" id="seguros" name="seguros" value="{{datos.seguros}}">
             </hgroup>
-          </form>
-        </hgroup>
-        <hgroup>
-          <h4>Ingresos anuales</h4>
-          <form>
+          </hgroup>
+          <hgroup>
+            <h4>Ingresos anuales</h4>
             <hgroup>
-              <h6>Cuota alquiler</h6><input type="number" id="alquiler" value="{{datos.alquiler}}">
+              <h6>Cuota alquiler</h6><input type="number" id="alquiler" name="alquiler" value="{{datos.alquiler}}">
             </hgroup>
-          </form>
-        </hgroup>
-        <hgroup>
-          <h4>Hipoteca</h4>
-          <form>
+          </hgroup>
+          <hgroup>
+            <h4>Hipoteca</h4>
             <hgroup>
-              <h6>% Financiado</h6><input type="number" id="financiado" value="{{datos.financiado}}">
+              <h6>% Financiado</h6><input type="number" id="financiado" name="financiado" value="{{datos.financiado}}">
               <h6>Hipoteca</h6><input type="number" id="hipoteca" readonly="readonly" value="{{datos.hipoteca}}">
               <h6>Capital a aportar</h6><input type="number" id="a_aportar" readonly="readonly" value="{{datos.a_aportar}}">
-              <h6>Plazo (años)</h6><input type="number" id="plazo" value="{{datos.plazo}}">
-              <h6>Tipo de interés</h6><input type="number" id="intereses_anuales" value="{{ (datos.interes_anuales*100) | round(1) }}"><span>%</span>
+              <h6>Plazo (años)</h6><input type="number" id="plazo"  name="plazo"value="{{datos.plazo}}">
+              <h6>Tipo de interés</h6><input type="number" id="intereses_anuales" name="intereses_anuales" value="{{ (datos.interes_anuales*100) | round(1) }}"><span>%</span>
               <h6>Cuota a pagar</h6><input type="number" id="cuota" readonly="readonly" value="{{ datos.cuota | int }}">
               <h6>Intereses (promedio)</h6><input type="number" id="cuota_intereses" readonly="readonly" value="{{ datos.cuota_intereses | int }}">
               <h6>Amortización (promedio)</h6><input type="number" id="cuota_amortizacion" readonly="readonly" value="{{ datos.cuota_amortizacion | int }}">
             </hgroup>
-          </form>
-        </hgroup>
-      </div>
-      <div>
-        <hgroup>
-          <h4>Rentabilidad</h4>
-          <form>
+          </hgroup>
+        </div>
+        <div>
+          <hgroup>
+            <h4>Rentabilidad</h4>
             <hgroup>
-              <h6>Rentabilidad bruta</h6><input type="number" id="r_bruta" readonly="readonly" value="{{ (datos.r_bruta*100) | round(1) }}">
+              <h6>Rentabilidad bruta</h6><input type="number" id="r_bruta" name="r_bruta" readonly="readonly" value="{{ (datos.r_bruta*100) | round(1) }}">
               <h6>Rentabilidad neta</h6><input type="number" id="r_neta" readonly="readonly" value="{{ (datos.r_neta*100) | round(1) }}">
               <h6>Cash flow</h6><input type="number" id="c_flow" readonly="readonly" value="{{ datos.c_flow | round }}">
               <h6>Cash on cash</h6><input type="number" id="c_oncash" readonly="readonly" value="{{ (datos.c_oncash*100) | round(1) }}">
               <h6>ROCE</h6><input type="number" id="roce" readonly="readonly" value="{{ (datos.roce*100) | round(1) }}">
+              <input type="submit" value="Descargar en Excel"/>
             </hgroup>
-          </form>
-        </hgroup>
+          </hgroup>
+        </div>
       </div>
-    </div>
-    <form action="{{url_for('calculadora')}}" method="GET"><input type="submit" value="Refrescar"/></form>
+    </form>
 </main>
 <script>
   document.getElementById("p_compra").oninput = function() {calculadora()};
@@ -138,10 +130,6 @@
     cuota_intereses.value = parseInt(((parseInt(cuota.value)*12*parseInt(plazo.value))-parseInt(hipoteca.value))/(parseInt(plazo.value)*12));
     var cuota_amortizacion = document.getElementById("cuota_amortizacion");
     cuota_amortizacion.value = parseInt(parseInt(cuota.value)-parseInt(cuota_intereses.value));
-    console.log(parseInt(p_compra.value));
-    console.log(parseInt(itp.value));
-    console.log(total_compra);
-    console.log(total_gastos);
     var r_bruta = document.getElementById("r_bruta");
     r_bruta.value = (((parseInt(alquiler.value)*12)/total_compra)*100).toFixed(1);
     var r_neta = document.getElementById("r_neta");
