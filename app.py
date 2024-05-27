@@ -3,6 +3,7 @@ from src.scraper import scraper
 from src.calculadora import DatosCalculadora
 import tempfile
 from openpyxl import load_workbook
+import os
 
 app=Flask(__name__)
 
@@ -47,4 +48,4 @@ def descargar():
 if __name__=='__main__':
     # app.run(host='0.0.0.0',debug=True)
     # app.run(host='0.0.0.0',port=8080)
-    app.run(debug=True)
+    app.run(debug = False, host='0.0.0.0', port=8080)
