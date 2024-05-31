@@ -1,0 +1,19 @@
+services:
+  web:
+    build: web
+    restart: always
+    environment:
+      - SCRAPINGANT=${SCRAPINGANT}
+    networks:
+      - flask_network
+  
+  proxy:
+    build: proxy
+    restart: always
+    ports:
+      - 80:80
+    networks:
+      - flask_network
+
+networks:
+  flask_network:
