@@ -1,9 +1,9 @@
-from flask import Flask, send_file, request, Response, render_template
+from flask import Flask, send_file, request, render_template
 from src.scraper import scraper
 from src.calculadora import DatosCalculadora
 import tempfile
 from openpyxl import load_workbook
-import os
+from dotenv import load_dotenv
 
 app=Flask(__name__)
 
@@ -46,6 +46,7 @@ def descargar():
     return send_file(temp_excel_file.name, as_attachment=True)
 
 if __name__=='__main__':
+    load_dotenv()
     # app.run(host='0.0.0.0',debug=True)
     # app.run(host='0.0.0.0',port=8080)
     app.run(debug = False, host='0.0.0.0', port=5000)
