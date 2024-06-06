@@ -11,7 +11,6 @@ __pycache__/
 *.so
 
 # Calculadora de rentabilidad
-*.xlsx
 test.ipynb
 
 # VSCode
