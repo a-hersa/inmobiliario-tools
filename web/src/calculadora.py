@@ -1,5 +1,5 @@
 import numpy_financial as npf
-from precios import PreciosAlquiler
+from src.precios import PreciosAlquiler
 
 class DatosCalculadora:
     def __init__(self, nombre, precio, metros, poblacion):
