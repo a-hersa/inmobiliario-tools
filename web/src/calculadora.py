@@ -21,7 +21,7 @@ class DatosCalculadora:
             self.comunidad = 400
             self.seguros = 400
             self.total_gastos = self.ibi+self.basuras+self.seguros+self.comunidad
-            self.alquiler = self.metros * getattr(precioMetroAlquiler, self.poblacion)
+            self.alquiler = int(self.metros * float(getattr(precioMetroAlquiler, self.poblacion)))
             self.financiado = 80
             self.hipoteca = int((self.financiado/100)*self.p_compra)
             self.a_aportar = int(self.p_compra+self.itp+self.reforma+self.notaria+self.registro+self.agencia+self.tasacion-self.hipoteca)
