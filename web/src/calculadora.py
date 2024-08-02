@@ -1,10 +1,13 @@
 import numpy_financial as npf
+from precios import PreciosAlquiler
 
 class DatosCalculadora:
-    def __init__(self, nombre, precio, metros):
+    def __init__(self, nombre, precio, metros, poblacion):
+            precioMetroAlquiler = PreciosAlquiler()
             self.nombre = str(nombre)
             self.precio = int(precio)
             self.metros = int(metros)
+            self.poblacion = str(poblacion)
             self.p_compra = int(precio)
             self.itp = int(float(precio) * 0.1)
             self.reforma = 6000
@@ -18,7 +21,7 @@ class DatosCalculadora:
             self.comunidad = 400
             self.seguros = 400
             self.total_gastos = self.ibi+self.basuras+self.seguros+self.comunidad
-            self.alquiler = 650
+            self.alquiler = self.metros * getattr(precioMetroAlquiler, self.poblacion)
             self.financiado = 80
             self.hipoteca = int((self.financiado/100)*self.p_compra)
             self.a_aportar = int(self.p_compra+self.itp+self.reforma+self.notaria+self.registro+self.agencia+self.tasacion-self.hipoteca)

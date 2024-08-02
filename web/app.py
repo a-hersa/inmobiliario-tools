@@ -15,7 +15,7 @@ def home_page():
 def calculadora():
     url=request.form['url']
     scrape = scraper(url)
-    datos = DatosCalculadora(scrape[0], scrape[1], scrape[2])
+    datos = DatosCalculadora(scrape[0], scrape[1], scrape[2], scrape[3])
     return render_template('calculadora.html', url=url, datos=datos)
 
 @app.route('/descargar', methods=['POST'])

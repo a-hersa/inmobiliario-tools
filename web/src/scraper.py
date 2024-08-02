@@ -1,6 +1,7 @@
 import os
 import requests
 from bs4 import BeautifulSoup
+from unidecode import unidecode
 
 def scraper(url):
     encoded_url = requests.utils.quote(url, safe='')
@@ -10,5 +11,6 @@ def scraper(url):
     nombre = soup.find('span', class_='main-info__title-main').text
     precio = soup.find('span', class_='info-data-price').text.replace('.','').strip(' €')
     metros = soup.find('div', class_='info-features').span.text.strip('\n').replace(' m²','')
-    datos = [nombre, precio, metros]
+    poblacion = soup.find('span', class_='main-info__title-minor').text.lower().split(", ")[-1].replace(" ", "").replace("'", "")
+    datos = [nombre, precio, metros, unidecode(poblacion)]
     return datos
