@@ -6,7 +6,32 @@ services:
       - SCRAPINGANT=${SCRAPINGANT}
     networks:
       - flask_network
-  
+
+  scrapy:
+    build: scrapy
+    restart: always
+    environment:
+      - SCRAPINGANT=${SCRAPINGANT}
+      - POSTGRES_DB=inmobiliario_db
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    networks:
+      - flask_network
+
+  postgres:
+    image: postgres:latest
+    restart: always
+    environment:
+      - POSTGRES_DB=inmobiliario_db
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - flask_network
+
   proxy:
     build: proxy
     restart: always
@@ -17,3 +42,6 @@ services:
 
 networks:
   flask_network:
+
+volumes:
+  postgres_data:

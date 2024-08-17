@@ -1,22 +1,94 @@
 from flask import Flask, send_file, request, render_template
 from src.scraper import scraper
 from src.calculadora import DatosCalculadora
+from src.calculadora import calculadora
 import tempfile
 from openpyxl import load_workbook
 from dotenv import load_dotenv
+import psycopg2
+import os
+from unidecode import unidecode
+
 
 app=Flask(__name__)
 
+# Registra la función para usarla en la plantilla
+app.jinja_env.globals.update(calculadora=calculadora)
+
+# DATABASE_URL = os.getenv('DATABASE_URL')
+
+# Configurar la conexión a la base de datos PostgreSQL
+def get_db_connection():
+    # conn = psycopg2.connect(DATABASE_URL)
+    conn = psycopg2.connect(
+        host='postgres',
+        port='5432',
+        dbname='inmobiliario_db',
+        user= f'{os.getenv("POSTGRES_USER")}',
+        password= f'{os.getenv("POSTGRES_PASSWORD")}'
+    )
+    return conn
+
 @app.route('/')
 def home_page():
-    return render_template('index.html')
+     # Obtener el número de página actual desde los parámetros de consulta
+    page = request.args.get('page', 1, type=int)
+    per_page = 20  # Elementos por página
+    offset = (page - 1) * per_page
 
-@app.route('/calculadora', methods=['POST'])
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    # Obtener los datos paginados
+    cursor.execute("""
+        SELECT nombre, fecha_scraped, precio, metros, poblacion, url, p_id 
+        FROM propiedades 
+        ORDER BY nombre 
+        LIMIT %s OFFSET %s
+    """, (per_page, offset))
+    propiedades = cursor.fetchall()
+
+    # Obtener el número total de registros
+    cursor.execute("SELECT COUNT(*) FROM propiedades")
+    total = cursor.fetchone()[0]
+
+    cursor.close()
+    conn.close()
+
+    # Calcular el número total de páginas
+    total_pages = (total + per_page - 1) // per_page
+
+    return render_template('index.html', propiedades=propiedades, page=page, total_pages=total_pages)
+
+@app.route('/calculadora', methods=['GET', 'POST'])
 def calculadora():
-    url=request.form['url']
-    scrape = scraper(url)
-    datos = DatosCalculadora(scrape[0], scrape[1], scrape[2], scrape[3])
-    return render_template('calculadora.html', url=url, datos=datos)
+    if request.method == 'POST':
+        # Caso: Solicitud POST con URL del scraper
+        url = request.form['url']
+        scrape = scraper(url)
+        datos = DatosCalculadora(scrape[0], scrape[1], scrape[2], scrape[3]) # nombre, precio, metros, poblacion
+        return render_template('calculadora.html', url=url, datos=datos)
+    
+    elif request.method == 'GET':
+        # Caso: Solicitud GET con p_id de la base de datos
+        p_id = request.args.get('p_id', type=int)
+        if p_id is not None:
+            conn = get_db_connection()
+            cursor = conn.cursor()
+            
+            cursor.execute("SELECT nombre, precio, metros, poblacion, url FROM propiedades WHERE p_id = %s", (p_id,))
+            propiedad = cursor.fetchone()
+            
+            conn.close()
+            
+            if propiedad:
+                datos = DatosCalculadora(propiedad[0], propiedad[1], propiedad[2], propiedad[3]) # nombre, precio, metros, poblacion
+                return render_template('calculadora.html', url=propiedad[4], datos=datos)
+            else:
+                return "Propiedad no encontrada", 404
+        else:
+            return "Parámetro p_id no proporcionado", 400
+
 
 @app.route('/descargar', methods=['POST'])
 def descargar():
@@ -45,8 +117,9 @@ def descargar():
     # path = "src/plantilla.xlsx"
     return send_file(temp_excel_file.name, as_attachment=True)
 
+
 if __name__=='__main__':
     load_dotenv()
     # app.run(host='0.0.0.0',debug=True)
     # app.run(host='0.0.0.0',port=8080)
-    app.run(debug = False, host='0.0.0.0', port=5000)
+    app.run(debug = True, host='0.0.0.0', port=5000)

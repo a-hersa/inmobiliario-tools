@@ -1,1 +1,3 @@
 SCRAPINGANT=some_key_123
+POSTGRES_USER=some_user
+POSTGRES_PASSWORD=some_password

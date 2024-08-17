@@ -8,18 +8,64 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/pico.min.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 <link rel="shortcut icon" href="{{ url_for('static', filename='icon.png') }}">
-<title>Calculadora de rentabilidad</title>
+<title>Inmobiliario Tools</title>
 {% endblock %}
 
 {% block body %}
 <main class="container">
-    <h1>Calculadora de rentabilidad</h1>
+    <h1>Inmobiliario Tools</h1>
+    <br>
+    <h3>Calculadora de rentabilidad</h3>
     <form action="{{url_for('calculadora')}}" method="POST">
       <fieldset role="group">
-        <input type="url" name="url" placeholder="Introduce una URL válida" />
+        <input type="url" name="url" placeholder="Introduce una URL válida ej.: https://www.idealista.com/inmueble/12345678" />
         <input type="submit" value="Calcular" />
       </fieldset>
     </form>
+    <h3>Novedades</h3>
+    <h6>Mataró, Premiá de Mar, Granollers, Argentona, Sant Pol de Mar, Canet de Mar, Caldes d'Estrac, Arenys de Mar.</h6>
+    <h6>Max. 120,000, 2 o más habitaciones, planta 1 o más (sin bajos)</h6>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Nombre</th>
+          <th scope="col">Actualizado</th>
+          <th scope="col">Precio</th>
+          <th scope="col">Metros</th>
+          <th scope="col">R. Bruta</th>
+          <th scope="col">Población</th>
+          <th scope="col">Calculadora</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for propiedad in propiedades %}
+        <tr>
+          <th scope="row"><a href="{{ propiedad[5] }}" target="_blank">{{ propiedad[0] }}</th>
+          <td>{{ propiedad[1] }}</td>
+          <td>{{ "{:,.0f}".format(propiedad[2]) }} €</td>
+          <td>{{ propiedad[3] }} m²</td>
+          <td>{{ (calculadora(propiedad[0], propiedad[2], propiedad[3], propiedad[4])[-5] *100) | round(1) }}%</td>
+          <td>{{ propiedad[4] }}</td>
+          <td><a href= "{{ url_for('calculadora', p_id=propiedad[6]) }}">Calculadora</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+  </table>
+
+  <!-- Paginación -->
+  <footer>
+      {% if page > 1 %}
+      <a href="{{ url_for('home_page', page=page-1) }}">&laquo; Anterior</a>
+      {% endif %}
+
+      {% for i in range(1, total_pages + 1) %}
+      <a href="{{ url_for('home_page', page=i) }}">{{ i }}</a>
+      {% endfor %}
+
+      {% if page < total_pages %}
+      <a href="{{ url_for('home_page', page=page+1) }}">&raquo;</a>
+      {% endif %}
+  </footer>
 </main>
 {% endblock %}
 
