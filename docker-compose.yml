@@ -4,17 +4,22 @@ services:
     restart: always
     environment:
       - SCRAPINGANT=${SCRAPINGANT}
+      - POSTGRES_DB=inmobiliario_db
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - TZ=Europe/Madrid
     networks:
       - flask_network
 
   scrapy:
     build: scrapy
-    restart: always
+    restart: "no"
     environment:
       - SCRAPINGANT=${SCRAPINGANT}
       - POSTGRES_DB=inmobiliario_db
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - TZ=Europe/Madrid
     networks:
       - flask_network
 
@@ -25,6 +30,7 @@ services:
       - POSTGRES_DB=inmobiliario_db
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - TZ=Europe/Madrid
     ports:
       - "5432:5432"
     volumes:
