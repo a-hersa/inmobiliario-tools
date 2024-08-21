@@ -1,4 +1,4 @@
-from flask import Flask, send_file, request, render_template
+from flask import Flask, send_file, request, render_template, flash
 from src.scraper import scraper
 from src.calculadora import DatosCalculadora
 from src.calculadora import calculadora
@@ -11,6 +11,7 @@ from unidecode import unidecode
 
 
 app=Flask(__name__)
+app.secret_key = 'your_secret_key'
 
 # Registra la función para usarla en la plantilla
 app.jinja_env.globals.update(calculadora=calculadora)
@@ -65,9 +66,15 @@ def calculadora():
     if request.method == 'POST':
         # Caso: Solicitud POST con URL del scraper
         url = request.form['url']
+
+        # try:
         scrape = scraper(url)
         datos = DatosCalculadora(scrape[0], scrape[1], scrape[2], scrape[3]) # nombre, precio, metros, poblacion
         return render_template('calculadora.html', url=url, datos=datos)
+        
+        # except Exception as e:
+        # #    flash(f"Hubo un problema al procesar la URL: {str(e)}, vuelva a intentarlo más tarde.", "error")
+        #     return render_template('calculadora.html', url=url, datos=None)
     
     elif request.method == 'GET':
         # Caso: Solicitud GET con p_id de la base de datos
@@ -112,7 +119,7 @@ def descargar():
     ws['H8'] = float(float(request.form['financiado'])/100)
     ws['H11'] = int(request.form['plazo'])
     ws['H12'] = float(float(request.form['intereses_anuales'])/100)
-    temp_excel_file = tempfile.NamedTemporaryFile(suffix='.xlsx', delete=False)
+    temp_excel_file = tempfile.NamedTemporaryFile(prefix='calculadora-', suffix='.xlsx', delete=False)
     wb.save(temp_excel_file.name)
     # path = "src/plantilla.xlsx"
     return send_file(temp_excel_file.name, as_attachment=True)
@@ -122,4 +129,4 @@ if __name__=='__main__':
     load_dotenv()
     # app.run(host='0.0.0.0',debug=True)
     # app.run(host='0.0.0.0',port=8080)
-    app.run(debug = True, host='0.0.0.0', port=5000)
+    app.run(debug = False, host='0.0.0.0', port=5000)

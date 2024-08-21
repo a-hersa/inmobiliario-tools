@@ -16,10 +16,10 @@
     <h1>Inmobiliario Tools</h1>
     <br>
     <h3>Calculadora de rentabilidad</h3>
-    <form action="{{url_for('calculadora')}}" method="POST">
+    <form action="{{url_for('calculadora')}}" method="POST" onsubmit="setAriaBusy()">
       <fieldset role="group">
-        <input type="url" name="url" placeholder="Introduce una URL válida ej.: https://www.idealista.com/inmueble/12345678" />
-        <input type="submit" value="Calcular" />
+        <input type="url" name="url" pattern="https://www\.idealista\.com.*" placeholder="Introduce una URL válida ej.: https://www.idealista.com/inmueble/12345678" />
+        <input type="submit" value="Calcular">
       </fieldset>
     </form>
     <h3>Novedades</h3>
@@ -32,7 +32,7 @@
           <th scope="col">Actualizado</th>
           <th scope="col">Precio</th>
           <th scope="col">Metros</th>
-          <th scope="col">R. Bruta</th>
+          <th scope="col"><em data-tooltip="La rentabilidad bruta se obtiene de dividir un año de alquiler entre el total de la compra y sus gastos">R. Bruta</em></th>
           <th scope="col">Población</th>
           <th scope="col">Calculadora</th>
         </tr>
@@ -68,5 +68,21 @@
   </footer>
 </main>
 {% endblock %}
+<script>
+  document.getElementById('url-form').addEventListener('submit', function(event) {
+    const urlInput = document.getElementById('idealista-url');
+    const errorMessage = document.getElementById('error-message');
+    const url = urlInput.value;
 
+    // Expresión regular para validar el dominio
+    const pattern = /^https:\/\/www\.idealista\.com/;
+
+    if (!pattern.test(url)) {
+      event.preventDefault(); // Previene el envío del formulario
+      errorMessage.style.display = 'inline'; // Muestra el mensaje de error
+    } else {
+      errorMessage.style.display = 'none'; // Oculta el mensaje de error
+    }
+  });
+</script>
 </html>
