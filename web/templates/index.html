@@ -18,7 +18,7 @@
   <h3>Calculadora de rentabilidad</h3>
   <form action="{{url_for('calculadora')}}" method="POST" onsubmit="setAriaBusy()">
     <fieldset role="group">
-      <input type="url" name="url" pattern="^https:\/\/www\.idealista\.com\/inmueble\/\d{9}.*$" placeholder="Introduce una URL válida ej.: https://www.idealista.com/inmueble/12345678" />
+      <input type="url" name="url" pattern="^https:\/\/www\.idealista\.com\/inmueble\/\d{9}\/.*$" placeholder="Introduce una URL válida ej.: https://www.idealista.com/inmueble/12345678" />
       <input type="submit" value="Calcular">
     </fieldset>
   </form>
@@ -75,7 +75,7 @@
     const url = urlInput.value;
 
     // Expresión regular para validar el dominio
-    const pattern = /^https:\/\/www\.idealista\.com\/inmueble\/\d{9}.*$/;
+    const pattern = /^https:\/\/www\.idealista\.com\/inmueble\/\d{9}\/.*$/;
 
     if (!pattern.test(url)) {
       event.preventDefault(); // Previene el envío del formulario
