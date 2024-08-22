@@ -44,7 +44,7 @@ def home_page():
     cursor.execute("""
         SELECT nombre, fecha_scraped, precio, metros, poblacion, url, p_id 
         FROM propiedades 
-        ORDER BY nombre 
+        ORDER BY fecha_scraped DESC 
         LIMIT %s OFFSET %s
     """, (per_page, offset))
     propiedades = cursor.fetchall()
