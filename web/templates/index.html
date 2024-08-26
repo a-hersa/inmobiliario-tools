@@ -14,10 +14,9 @@
 {% block body %}
 <main class="container">
   <h1>Inmobiliario Tools</h1>
-  <h6>Calcula la rentabilidad de una vivienda en el buscador o consulta las últimas noveddes</h6>
+  <h6>Calcula la rentabilidad de una vivienda en el buscador o consulta las últimas novedades.</h6>
   <br>
   <h3>Calculadora de rentabilidad</h3>
-  <p>Introduce una URL con el formato "https://www.idealista.com/inmueble/123456789/"</p>
   <form action="{{url_for('calculadora')}}" method="POST" onsubmit="setAriaBusy()">
     <fieldset role="group">
       <input type="url" name="url" pattern="^https:\/\/www\.idealista\.com\/inmueble\/\d{9}\/.*$" placeholder="Introduce una URL válida ej.: https://www.idealista.com/inmueble/123456789/" />
@@ -26,8 +25,9 @@
   </form>
   <h3>Novedades</h3>
   <p>Los inmuebles se actualizan diariamente con los siguientes filtros:</p>
-  <p>Mataró, Premiá de Mar, Granollers, Argentona, Sant Pol de Mar, Canet de Mar, Caldes d'Estrac, Arenys de Mar.</p>
-  <p>Max. 120,000, 2 o más habitaciones, planta 1 o más (sin bajos)</p>
+  <li>Mataró, Premiá de Mar, Granollers, Argentona, Sant Pol de Mar, Canet de Mar, Caldes d'Estrac, Arenys de Mar.</li>
+  <li>Max. 120,000, 2 o más habitaciones, planta 1 o más (sin bajos)</li>
+  <br>
   <table>
     <thead>
       <tr>
