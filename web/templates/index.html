@@ -36,6 +36,7 @@
         <th scope="col">Precio</th>
         <th scope="col">Metros</th>
         <th scope="col"><em data-tooltip="La rentabilidad bruta se obtiene de dividir un año de alquiler entre el total de la compra y sus gastos">R. Bruta</em></th>
+        <th scope="col">Estado</th>
         <th scope="col">Población</th>
         <th scope="col">Calculadora</th>
       </tr>
@@ -48,6 +49,7 @@
         <td>{{ "{:,.0f}".format(propiedad[2]) }} €</td>
         <td>{{ propiedad[3] }} m²</td>
         <td>{{ (calculadora(propiedad[0], propiedad[2], propiedad[3], propiedad[4])[-5] *100) | round(1) }}%</td>
+        <td>{{ propiedad[7] }}</td>
         <td>{{ propiedad[4] }}</td>
         <td><a href= "{{ url_for('calculadora', p_id=propiedad[6]) }}">Calculadora</td>
       </tr>

@@ -32,7 +32,7 @@ def get_db_connection():
 
 @app.route('/')
 def home_page():
-     # Obtener el número de página actual desde los parámetros de consulta
+    # Obtener el número de página actual desde los parámetros de consulta
     page = request.args.get('page', 1, type=int)
     per_page = 20  # Elementos por página
     offset = (page - 1) * per_page
@@ -40,14 +40,45 @@ def home_page():
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    # Obtener los datos paginados
+    # Obtener los datos paginados incluyendo la columna 'descripcion'
     cursor.execute("""
-        SELECT nombre, fecha_scraped, precio, metros, poblacion, url, p_id 
+        SELECT nombre, fecha_scraped, precio, metros, poblacion, url, p_id, descripcion 
         FROM propiedades 
         ORDER BY fecha_scraped DESC 
         LIMIT %s OFFSET %s
     """, (per_page, offset))
     propiedades = cursor.fetchall()
+
+    # Procesar cada propiedad para modificar los campos 'nombre' y 'descripcion'
+    propiedades_procesadas = []
+    for propiedad in propiedades:
+        nombre = propiedad[0]  # El campo 'nombre' está en la primera posición de la tupla
+        descripcion = propiedad[7]  # El campo 'descripcion' está en la última posición de la tupla
+
+        # Modificar 'nombre' si contiene "en venta en "
+        if "en venta en " in nombre:
+            nombre = nombre.split("en venta en ", 1)[-1]
+        # Capitalizar el nombre
+        nombre = nombre.capitalize()
+
+        # Modificar 'descripcion'
+        if "ocupado por persona" in descripcion.lower():
+            descripcion = "Ocupado"
+        else:
+            descripcion = ""
+
+        # Crear una nueva tupla con los campos modificados y los demás datos intactos
+        propiedad_modificada = (
+            nombre,
+            propiedad[1],
+            propiedad[2],
+            propiedad[3],
+            propiedad[4],
+            propiedad[5],
+            propiedad[6],
+            descripcion
+        )
+        propiedades_procesadas.append(propiedad_modificada)
 
     # Obtener el número total de registros
     cursor.execute("SELECT COUNT(*) FROM propiedades")
@@ -59,7 +90,9 @@ def home_page():
     # Calcular el número total de páginas
     total_pages = (total + per_page - 1) // per_page
 
-    return render_template('index.html', propiedades=propiedades, page=page, total_pages=total_pages)
+    # Pasar las propiedades procesadas a la plantilla
+    return render_template('index.html', propiedades=propiedades_procesadas, page=page, total_pages=total_pages)
+
 
 @app.route('/calculadora', methods=['GET', 'POST'])
 def calculadora():
