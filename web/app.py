@@ -44,6 +44,12 @@ def home_page():
     cursor.execute("""
         SELECT nombre, fecha_scraped, precio, metros, poblacion, url, p_id, descripcion 
         FROM propiedades 
+        WHERE p_id IN (
+            SELECT p_id 
+            FROM propiedades 
+            ORDER BY fecha_scraped DESC 
+            LIMIT 100
+        )
         ORDER BY fecha_scraped DESC 
         LIMIT %s OFFSET %s
     """, (per_page, offset))
@@ -64,6 +70,10 @@ def home_page():
         # Modificar 'descripcion'
         if "ocupado por persona" in descripcion.lower():
             descripcion = "Ocupado"
+        elif 'subasta' in descripcion.lower():
+            descripcion = 'Subasta'
+        elif 'arrendado a tercero' in descripcion.lower():
+            descripcion = 'Arrendado'
         else:
             descripcion = ""
 
