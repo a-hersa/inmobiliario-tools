@@ -44,7 +44,7 @@ class NovedadesSpider(scrapy.Spider):
         propiedad = PropertyItem()
         propiedad['p_id'] = response.url
         propiedad["nombre"] = response.css('span.main-info__title-main::text').get()
-        propiedad["fecha_idealista"] = response.css('#stats > p::text').get()
+        # propiedad["fecha_new"] = response.css('#stats > p::text').get()
         propiedad["precio"] = response.css('span.info-data-price > span.txt-bold::text').get()
         propiedad["metros"] = response.css('div.info-features > span::text').getall()[0] 
         propiedad["habitaciones"]= response.css('div.info-features > span::text').getall()[1]

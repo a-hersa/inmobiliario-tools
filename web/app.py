@@ -42,15 +42,15 @@ def home_page():
 
     # Obtener los datos paginados incluyendo la columna 'descripcion'
     cursor.execute("""
-        SELECT nombre, fecha_scraped, precio, metros, poblacion, url, p_id, descripcion 
+        SELECT nombre, fecha_updated, precio, metros, poblacion, url, p_id, descripcion 
         FROM propiedades 
         WHERE p_id IN (
             SELECT p_id 
             FROM propiedades 
-            ORDER BY fecha_scraped DESC 
+            ORDER BY fecha_updated DESC 
             LIMIT 100
         )
-        ORDER BY fecha_scraped DESC 
+        ORDER BY fecha_updated DESC 
         LIMIT %s OFFSET %s
     """, (per_page, offset))
     propiedades = cursor.fetchall()

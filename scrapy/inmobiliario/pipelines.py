@@ -10,7 +10,6 @@ import re
 import psycopg2
 from scrapy.exceptions import DropItem
 from datetime import datetime
-import os
 
 
 class PropertyItemPipeline:
@@ -23,7 +22,10 @@ class PropertyItemPipeline:
             # Ejemplo: Convertir el precio a un formato numérico
             item['p_id'] = self.convert_to_p_id(item['p_id'])
 
-            item['fecha_idealista'] = self.convert_str_to_date(item['fecha_idealista'])
+            item['fecha_new'] = datetime.today().strftime('%Y-%m-%d')
+            # item['fecha_new'] = self.convert_str_to_date(item['fecha_idealista'])
+            
+            item['fecha_updated'] = datetime.today().strftime('%Y-%m-%d')
 
             item['precio'] = self.convert_price_to_number(item['precio'])
 
@@ -33,7 +35,7 @@ class PropertyItemPipeline:
 
             item['planta'] = self.convert_floor_to_number(item['planta'])
 
-            item['ascensor'] = self.convert_lift_to_number(item['ascensor'])
+            item['ascensor'] = self.convert_lift_to_number(item['ascensor'], item['descripcion'])
 
             item['poblacion'] = self.extract_city(item['poblacion'])
 
@@ -115,10 +117,14 @@ class PropertyItemPipeline:
         else:
             return 0
         
-    def convert_lift_to_number(self, lift_str):
+    def convert_lift_to_number(self, lift_str, desc_str):
         if 'con ascensor' in lift_str:
             return 1
         elif 'sin ascensor' in lift_str:
+            return 0
+        elif 'con ascensor' in desc_str:
+            return 1
+        elif 'sin ascensor' in desc_str:
             return 0
         else:
             return 2
@@ -155,8 +161,8 @@ class PostgresPipeline:
             CREATE TABLE IF NOT EXISTS propiedades (
                 p_id INT PRIMARY KEY,
                 nombre VARCHAR(255),
-                fecha_idealista DATE,
-                fecha_scraped DATE,
+                fecha_new DATE,
+                fecha_updated DATE,
                 precio INT,
                 metros INT,
                 habitaciones INT,
@@ -182,17 +188,16 @@ class PostgresPipeline:
             # Verificar si el item ya existe en la base de datos
             self.cursor.execute("SELECT 1 FROM propiedades WHERE p_id = %s", (p_id,))
             result = self.cursor.fetchone()
-            
+            fecha_updated = datetime.today().strftime('%Y-%m-%d')  # Fecha actual
+
             if result:
                 # Si ya existe el registro, actualizamos el contenido
                 print(f"Item already exists. Updating item: {p_id}")
-                fecha_scraped = datetime.today().strftime('%Y-%m-%d')  # Fecha actual
 
                 self.cursor.execute('''
                     UPDATE propiedades
                     SET nombre = %s,
-                        fecha_idealista = %s,
-                        fecha_scraped = %s,
+                        fecha_updated = %s,
                         precio = %s,
                         metros = %s,
                         habitaciones = %s,
@@ -204,8 +209,7 @@ class PostgresPipeline:
                     WHERE p_id = %s
                 ''', (
                     item.get('nombre', 'Desconocido').capitalize(),
-                    item.get('fecha_idealista'),
-                    fecha_scraped,
+                    fecha_updated,
                     item.get('precio'),
                     item.get('metros'),
                     item.get('habitaciones'),
@@ -213,13 +217,11 @@ class PostgresPipeline:
                     item.get('ascensor'),
                     item.get('poblacion'),
                     item.get('url'),
-                    descripcion,  # Descripción procesada
+                    item.get('descripcion')
                     p_id
                 ))
 
             else:
-                # Insertar un nuevo registro si no existe
-                fecha_scraped = datetime.today().strftime('%Y-%m-%d')
 
                 # Insert item into database
                 self.cursor.execute("""
@@ -228,8 +230,8 @@ class PostgresPipeline:
                 """, (
                     p_id,
                     item.get('nombre'),
-                    item.get('fecha_idealista'),
-                    fecha_scraped,
+                    item.get('fecha_new'),
+                    fecha_updated,
                     item.get('precio'),
                     item.get('metros'),
                     item.get('habitaciones'),

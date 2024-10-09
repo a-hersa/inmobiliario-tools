@@ -5,11 +5,10 @@
 
 import scrapy
 
-
 class PropertyItem(scrapy.Item):
     p_id = scrapy.Field()
     nombre = scrapy.Field()
-    fecha_idealista = scrapy.Field()
+    # fecha_new = scrapy.Field()
     precio = scrapy.Field()
     metros = scrapy.Field()
     habitaciones = scrapy.Field()
