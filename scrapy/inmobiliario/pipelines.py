@@ -225,7 +225,7 @@ class PostgresPipeline:
 
                 # Insert item into database
                 self.cursor.execute("""
-                    INSERT INTO propiedades (p_id, nombre, fecha_idealista, fecha_scraped, precio, metros, habitaciones, planta, ascensor, poblacion, url, descripcion)
+                    INSERT INTO propiedades (p_id, nombre, fecha_new, fecha_updated, precio, metros, habitaciones, planta, ascensor, poblacion, url, descripcion)
                     VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                 """, (
                     p_id,
