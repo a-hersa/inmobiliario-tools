@@ -23,7 +23,7 @@ class PropertyItemPipeline:
             item['p_id'] = self.convert_to_p_id(item['p_id'])
 
             item['fecha_new'] = datetime.today().strftime('%Y-%m-%d')
-            # item['fecha_new'] = self.convert_str_to_date(item['fecha_idealista'])
+            # item['fecha_new'] = self.convert_str_to_date(item['fecha_new'])
             
             item['fecha_updated'] = datetime.today().strftime('%Y-%m-%d')
 
@@ -188,7 +188,7 @@ class PostgresPipeline:
             # Verificar si el item ya existe en la base de datos
             self.cursor.execute("SELECT 1 FROM propiedades WHERE p_id = %s", (p_id,))
             result = self.cursor.fetchone()
-            fecha_updated = datetime.today().strftime('%Y-%m-%d')  # Fecha actual
+            # fecha_updated = datetime.today().strftime('%Y-%m-%d')  # Fecha actual
 
             if result:
                 # Si ya existe el registro, actualizamos el contenido
@@ -209,7 +209,7 @@ class PostgresPipeline:
                     WHERE p_id = %s
                 ''', (
                     item.get('nombre', 'Desconocido').capitalize(),
-                    fecha_updated,
+                    item.get('fecha_updated'),
                     item.get('precio'),
                     item.get('metros'),
                     item.get('habitaciones'),
@@ -231,7 +231,7 @@ class PostgresPipeline:
                     p_id,
                     item.get('nombre'),
                     item.get('fecha_new'),
-                    fecha_updated,
+                    item.get('fecha_updated'),
                     item.get('precio'),
                     item.get('metros'),
                     item.get('habitaciones'),
