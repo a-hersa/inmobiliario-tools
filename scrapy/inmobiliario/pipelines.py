@@ -217,7 +217,7 @@ class PostgresPipeline:
                     item.get('ascensor'),
                     item.get('poblacion'),
                     item.get('url'),
-                    item.get('descripcion')
+                    item.get('descripcion'),
                     p_id
                 ))
 
