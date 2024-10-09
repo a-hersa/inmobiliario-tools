@@ -149,6 +149,7 @@ class PostgresPipeline:
             password=spider.settings.get('POSTGRES_PASSWORD')
         )
         self.cursor = self.connection.cursor()
+
         # Crear la tabla si no existe
         self.cursor.execute('''
             CREATE TABLE IF NOT EXISTS propiedades (
@@ -169,24 +170,57 @@ class PostgresPipeline:
         self.connection.commit()
 
     def close_spider(self, spider):
-        #Este método se ejecuta cuando el spider se cierra.
+        # Cerrar la conexión cuando el spider se cierra
         self.cursor.close()
         self.connection.close()
 
     def process_item(self, item, spider):
         p_id = int(item['p_id'])
         print(f"p_id value being processed: {p_id}")
-        print(f"descripcion length is: {len(item.get('descripcion'))}")
 
         try:
+            # Verificar si el item ya existe en la base de datos
             self.cursor.execute("SELECT 1 FROM propiedades WHERE p_id = %s", (p_id,))
             result = self.cursor.fetchone()
+            
             if result:
-                print(f"Duplicate item found: {p_id}")
-                raise DropItem(f"Duplicate item found: {p_id}")
+                # Si ya existe el registro, actualizamos el contenido
+                print(f"Item already exists. Updating item: {p_id}")
+                fecha_scraped = datetime.today().strftime('%Y-%m-%d')  # Fecha actual
+
+                self.cursor.execute('''
+                    UPDATE propiedades
+                    SET nombre = %s,
+                        fecha_idealista = %s,
+                        fecha_scraped = %s,
+                        precio = %s,
+                        metros = %s,
+                        habitaciones = %s,
+                        planta = %s,
+                        ascensor = %s,
+                        poblacion = %s,
+                        url = %s,
+                        descripcion = %s
+                    WHERE p_id = %s
+                ''', (
+                    item.get('nombre', 'Desconocido').capitalize(),
+                    item.get('fecha_idealista'),
+                    fecha_scraped,
+                    item.get('precio'),
+                    item.get('metros'),
+                    item.get('habitaciones'),
+                    item.get('planta'),
+                    item.get('ascensor'),
+                    item.get('poblacion'),
+                    item.get('url'),
+                    descripcion,  # Descripción procesada
+                    p_id
+                ))
+
             else:
-                # Obtener la fecha actual
+                # Insertar un nuevo registro si no existe
                 fecha_scraped = datetime.today().strftime('%Y-%m-%d')
+
                 # Insert item into database
                 self.cursor.execute("""
                     INSERT INTO propiedades (p_id, nombre, fecha_idealista, fecha_scraped, precio, metros, habitaciones, planta, ascensor, poblacion, url, descripcion)
@@ -205,12 +239,16 @@ class PostgresPipeline:
                     item.get('url'),
                     item.get('descripcion')
                 ))
+
+                # Confirmar cambios en la base de datos
                 self.connection.commit()
                 print(f"Item inserted successfully: {p_id}")
+
         except psycopg2.Error as e:
             print(f"Database error: {e}")
             self.connection.rollback()
             raise DropItem(f"Database error: {e}")
+        
         except Exception as e:
             print(f"Unexpected error: {e}")
             raise DropItem(f"Unexpected error: {e}")
