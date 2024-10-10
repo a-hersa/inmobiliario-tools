@@ -22,6 +22,8 @@ class PropertyItemPipeline:
             # Ejemplo: Convertir el precio a un formato numérico
             item['p_id'] = self.convert_to_p_id(item['p_id'])
 
+            item['nombre'] = self.trim_name(item['nombre'])
+
             item['fecha_new'] = datetime.today().strftime('%Y-%m-%d')
             # item['fecha_new'] = self.convert_str_to_date(item['fecha_new'])
             
@@ -41,6 +43,9 @@ class PropertyItemPipeline:
 
             item['descripcion'] = self.smooth_text(item['descripcion'])
 
+            item['estatus'] = self.get_status(item['descripcion'])
+            
+
         return item  # Devuelve el item modificado
     
     def convert_to_p_id(self, url):
@@ -48,7 +53,14 @@ class PropertyItemPipeline:
             p_id = url.split('/')[-2]
             return int(p_id)
         except:
-            return 
+            return
+        
+    def trim_name(self, name):
+        if "en venta en " in nombre:
+            nombre = name.capitalize().split("en venta en ", 1)[-1]
+        # Capitalizar el nombre
+        nombre = nombre.capitalize()
+        return nombre
         
     def convert_str_to_date(self, date_str):
         date_str = date_str.replace('Anuncio actualizado el ', '')
@@ -143,6 +155,18 @@ class PropertyItemPipeline:
         
         return text
     
+    def get_status(self, description):
+        if "ocupado por persona" in description.lower():
+            status = "Ocupado"
+        elif 'subasta' in description.lower():
+            status = 'Subasta'
+        elif 'arrendado a tercero' in description.lower():
+            status = 'Arrendado'
+        else:
+            status = ""
+        
+        return status
+    
 class PostgresPipeline:
     def open_spider(self, spider):
         #Este método se ejecuta cuando el spider se abre.
@@ -170,7 +194,8 @@ class PostgresPipeline:
                 ascensor INT,
                 poblacion VARCHAR(255),
                 url VARCHAR(255),
-                descripcion VARCHAR(4000)
+                descripcion VARCHAR(4000),
+                estatus VARCHAR(255)            
             )
         ''')
         self.connection.commit()
@@ -205,10 +230,11 @@ class PostgresPipeline:
                         ascensor = %s,
                         poblacion = %s,
                         url = %s,
-                        descripcion = %s
+                        descripcion = %s,
+                        estatus = %s
                     WHERE p_id = %s
                 ''', (
-                    item.get('nombre', 'Desconocido').capitalize(),
+                    item.get('nombre'),
                     item.get('fecha_updated'),
                     item.get('precio'),
                     item.get('metros'),
@@ -218,6 +244,7 @@ class PostgresPipeline:
                     item.get('poblacion'),
                     item.get('url'),
                     item.get('descripcion'),
+                    item.get('estatus'),
                     p_id
                 ))
 
@@ -239,7 +266,8 @@ class PostgresPipeline:
                     item.get('ascensor'),
                     item.get('poblacion'),
                     item.get('url'),
-                    item.get('descripcion')
+                    item.get('descripcion'),
+                    item.get('estatus')
                 ))
 
                 # Confirmar cambios en la base de datos

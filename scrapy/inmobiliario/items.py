@@ -18,3 +18,4 @@ class PropertyItem(scrapy.Item):
     poblacion = scrapy.Field()
     url = scrapy.Field()
     descripcion = scrapy.Field()
+    estatus = scrapy.Field()

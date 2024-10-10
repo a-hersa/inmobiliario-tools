@@ -42,7 +42,7 @@ def home_page():
 
     # Obtener los datos paginados incluyendo la columna 'descripcion'
     cursor.execute("""
-        SELECT nombre, fecha_updated, precio, metros, poblacion, url, p_id, descripcion 
+        SELECT nombre, fecha_updated, precio, metros, poblacion, url, p_id, estatus 
         FROM propiedades 
         WHERE p_id IN (
             SELECT p_id 
@@ -55,41 +55,6 @@ def home_page():
     """, (per_page, offset))
     propiedades = cursor.fetchall()
 
-    # Procesar cada propiedad para modificar los campos 'nombre' y 'descripcion'
-    propiedades_procesadas = []
-    for propiedad in propiedades:
-        nombre = propiedad[0]  # El campo 'nombre' está en la primera posición de la tupla
-        descripcion = propiedad[7]  # El campo 'descripcion' está en la última posición de la tupla
-
-        # Modificar 'nombre' si contiene "en venta en "
-        if "en venta en " in nombre:
-            nombre = nombre.split("en venta en ", 1)[-1]
-        # Capitalizar el nombre
-        nombre = nombre.capitalize()
-
-        # Modificar 'descripcion'
-        if "ocupado por persona" in descripcion.lower():
-            descripcion = "Ocupado"
-        elif 'subasta' in descripcion.lower():
-            descripcion = 'Subasta'
-        elif 'arrendado a tercero' in descripcion.lower():
-            descripcion = 'Arrendado'
-        else:
-            descripcion = ""
-
-        # Crear una nueva tupla con los campos modificados y los demás datos intactos
-        propiedad_modificada = (
-            nombre,
-            propiedad[1],
-            propiedad[2],
-            propiedad[3],
-            propiedad[4],
-            propiedad[5],
-            propiedad[6],
-            descripcion
-        )
-        propiedades_procesadas.append(propiedad_modificada)
-
     # Obtener el número total de registros
     cursor.execute("SELECT COUNT(*) FROM propiedades")
     total = cursor.fetchone()[0]
@@ -101,7 +66,7 @@ def home_page():
     total_pages = (total + per_page - 1) // per_page
 
     # Pasar las propiedades procesadas a la plantilla
-    return render_template('index.html', propiedades=propiedades_procesadas, page=page, total_pages=total_pages)
+    return render_template('index.html', propiedades=propiedades, page=page, total_pages=total_pages)
 
 
 @app.route('/calculadora', methods=['GET', 'POST'])
