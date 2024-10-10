@@ -34,8 +34,8 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
-      - flask_network:
-          - ipv4_address: 172.20.0.6
+      flask_network:
+        ipv4_address: 172.20.0.6
 
   proxy:
     build: proxy
