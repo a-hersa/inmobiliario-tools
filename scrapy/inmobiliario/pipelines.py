@@ -56,7 +56,7 @@ class PropertyItemPipeline:
             return
         
     def trim_name(self, name):
-        if "en venta en " in nombre:
+        if "en venta en " in name:
             nombre = name.capitalize().split("en venta en ", 1)[-1]
         # Capitalizar el nombre
         nombre = nombre.capitalize()
