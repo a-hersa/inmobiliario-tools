@@ -209,6 +209,15 @@ class PostgresPipeline:
         p_id = int(item['p_id'])
         print(f"p_id value being processed: {p_id}")
 
+        # Verificar condiciones para excluir
+        planta = item.get('planta')
+        ascensor = item.get('ascensor')
+
+        # Condición para excluir la propiedad
+        if planta > 3 and ascensor == 0:
+            print(f"Property excluded: {p_id}, Planta: {planta}, Ascensor: {ascensor}")
+            return
+            
         try:
             # Verificar si el item ya existe en la base de datos
             self.cursor.execute("SELECT 1 FROM propiedades WHERE p_id = %s", (p_id,))
