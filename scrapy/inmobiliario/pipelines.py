@@ -257,12 +257,16 @@ class PostgresPipeline:
                     p_id
                 ))
 
+                # Confirmar cambios después de la actualización
+                self.connection.commit()
+                print(f"Item updated successfully: {p_id}")
+
             else:
 
                 # Insert item into database
                 self.cursor.execute("""
-                    INSERT INTO propiedades (p_id, nombre, fecha_new, fecha_updated, precio, metros, habitaciones, planta, ascensor, poblacion, url, descripcion)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                    INSERT INTO propiedades (p_id, nombre, fecha_new, fecha_updated, precio, metros, habitaciones, planta, ascensor, poblacion, url, descripcion, estatus
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                 """, (
                     p_id,
                     item.get('nombre'),
