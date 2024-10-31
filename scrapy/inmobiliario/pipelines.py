@@ -156,11 +156,15 @@ class PropertyItemPipeline:
         return text
     
     def get_status(self, description):
-        if "ocupado por persona" in description.lower():
+        ocupado_list = ["ocupado por persona", "inmueble sin posesi", "ocupada por"]
+        subasta_list = ["subasta"]
+        arrendado_list = ["arrendado a tercero"]
+
+        if any(ocupado in description.lower() for ocupado in ocupado_list):
             status = "Ocupado"
-        elif 'subasta' in description.lower():
+        elif any(subasta in description.lower() for subasta in subasta_list):
             status = 'Subasta'
-        elif 'arrendado a tercero' in description.lower():
+        elif any(arrendado in description.lower() for arrendado in arrendado_list):
             status = 'Arrendado'
         else:
             status = ""
