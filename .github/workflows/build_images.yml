@@ -22,9 +22,11 @@ jobs:
       - name: Build and push web-inmobiliario image
         run: |
           docker build -t ahersa/web-inmobiliario:latest ./web
+          docker buildx build --platform linux/amd64,linux/arm64/v8 -t ahersa/web-inmobiliario:latest ./web --output=type=registry
           docker push ahersa/web-inmobiliario:latest
 
       - name: Build and push scrapy-inmobiliario image
         run: |
           docker build -t ahersa/scrapy-inmobiliario:latest ./scrapy
+          docker buildx build --platform linux/amd64,linux/arm64/v8 -t ahersa/scrapy-inmobiliario:latest ./scrapy --output=type=registry
           docker push ahersa/scrapy-inmobiliario:latest
