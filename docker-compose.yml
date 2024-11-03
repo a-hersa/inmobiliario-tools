@@ -1,6 +1,7 @@
 services:
   web:
     build: web
+    image: ahersa/web-inmobiliario:latest
     restart: always
     environment:
       - SCRAPINGANT=${SCRAPINGANT}
@@ -13,6 +14,7 @@ services:
 
   scrapy:
     build: scrapy
+    image: ahersa/scrapy-inmobiliario:latest
     restart: "no"
     environment:
       - SCRAPINGANT=${SCRAPINGANT}
