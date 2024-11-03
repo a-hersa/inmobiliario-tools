@@ -1,3 +1,6 @@
+## .env file
+Edit the env-template file
+
 ## Commands
 `docker-compose ps`
 
@@ -11,5 +14,3 @@
 
 ### UFW
 add ports in server's dashboard
-
-/var/app/
