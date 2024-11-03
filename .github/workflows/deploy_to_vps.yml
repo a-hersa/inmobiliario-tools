@@ -24,7 +24,4 @@ jobs:
           VPS_HOST: ${{ secrets.VPS_HOST }}
           VPS_DIRECTORY: ${{ secrets.VPS_DIRECTORY }}
         run: |
-          ssh -o StrictHostKeyChecking=no $VPS_USER@$VPS_HOST << EOF
-            cd VPS_DIRECTORY
-            sudo docker compose up -d --build
-          EOF
+          ssh -o StrictHostKeyChecking=no $VPS_USER@$VPS_HOST "cd $VPS_DIRECTORY && sudo docker compose up -d --build"
