@@ -28,7 +28,7 @@ services:
     networks:
       - flask_network
   postgres:
-    image: postgres:latest
+    image: postgres:15
     container_name: inmobiliario-postgres
     platform: linux/arm64/v8
     restart: always
