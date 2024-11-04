@@ -1,6 +1,8 @@
 services:
   web:
     image: ahersa/web-inmobiliario:latest
+    container_name: inmobiliario-web
+    platform: linux/arm64/v8
     restart: always
     environment:
       - SCRAPINGANT=${SCRAPINGANT}
@@ -10,8 +12,12 @@ services:
       - TZ=Europe/Madrid
     networks:
       - flask_network
+      - reverse-proxy
+    ports: []
   scrapy:
     image: ahersa/scrapy-inmobiliario:latest
+    container_name: inmobiliario-scrapy
+    platform: linux/arm64/v8
     restart: no
     environment:
       - SCRAPINGANT=${SCRAPINGANT}
@@ -23,6 +29,8 @@ services:
       - flask_network
   postgres:
     image: postgres:latest
+    container_name: inmobiliario-postgres
+    platform: linux/arm64/v8
     restart: always
     environment:
       - POSTGRES_DB=inmobiliario_db
@@ -30,23 +38,15 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - TZ=Europe/Madrid
     volumes:
-      - postgres_data:/var/lib/postgresql/data
-    networks:
-      flask_network:
-        ipv4_address: 192.168.100.6
-  proxy:
-    image: nginx:latest
-    restart: always
-    volumes:
-      - ../../configs/inmobiliario-tools/nginx.conf:/etc/nginx/conf.d/default.conf
-    ports:
-      - 80:80
+      - inmobiliario-tools_postgres_data:/var/lib/postgresql/data
     networks:
       - flask_network
+    ports:
+      - 5432:5432
 networks:
-  flask_network:
-    ipam:
-      config:
-        - subnet: 192.168.100.0/24
+  flask_network: {}
+  reverse-proxy:
+    external: true
 volumes:
-  postgres_data: null
+  inmobiliario-tools_postgres_data:
+    external: true
