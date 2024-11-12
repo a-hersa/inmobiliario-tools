@@ -6,4 +6,4 @@ RUN apt-get update && \
     apt-get install -y gcc libxml2-dev libxslt1-dev && \
     pip install --no-cache-dir -r requirements.txt
 COPY . /code/
-CMD ["scrapy", "crawl", "novedades"]
+# CMD ["scrapy", "crawl", "novedades"]
