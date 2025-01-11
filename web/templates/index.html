@@ -21,7 +21,7 @@
   <form action="{{url_for('calculadora')}}" method="POST" onsubmit="setAriaBusy()">
     <fieldset role="group">
       <input type="url" name="url" pattern="^https:\/\/www\.idealista\.com\/inmueble\/\d{9}\/.*$" placeholder="Introduce una URL válida ej.: https://www.idealista.com/inmueble/123456789/" />
-      <div class="cf-turnstile" data-sitekey="{{ site_key }}"></div>
+      <!-- <div class="cf-turnstile" data-sitekey="{{ site_key }}"></div> -->
       <input type="submit" value="Calcular">
     </fieldset>
   </form>
