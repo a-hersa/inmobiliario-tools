@@ -66,7 +66,7 @@ def home_page():
     total_pages = (total + per_page - 1) // per_page
 
     # Pasar las propiedades procesadas a la plantilla
-    return render_template('index.html', propiedades=propiedades, page=page, total_pages=total_pages)
+    return render_template('index.html', propiedades=propiedades, page=page, total_pages=total_pages, site_key=os.getenv("TURNSTILE_SITE_KEY"))
 
 
 @app.route('/calculadora', methods=['GET', 'POST'])
