@@ -26,11 +26,18 @@ proxies = {
 }
 
 def scraper(url):
+
+    # request with ScrapingAnt
     # encoded_url = requests.utils.quote(url, safe='')
     # req_url = f'https://api.scrapingant.com/v2/general?url={encoded_url}&x-api-key={os.getenv("SCRAPINGANT")}&browser=false&proxy_country=ES'
     # print(req_url)
     # r = requests.get(req_url)
-    r = requests.get(url, headers=headers, proxies=proxies)
+    
+    # request with IPRoyal and headers
+    # r = requests.get(url, headers=headers, proxies=proxies)
+
+    # request with IPRoyal without headers
+    r = requests.get(url, proxies=proxies)
     soup = BeautifulSoup(r.text)
     nombre = soup.find('span', class_='main-info__title-main').text
     precio = soup.find('span', class_='info-data-price').text.replace('.','').strip(' €')
