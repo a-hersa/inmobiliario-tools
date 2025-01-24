@@ -1,5 +1,4 @@
-from flask import Flask, send_file, request, render_template, flash
-from src.scraper import scraper
+from flask import Flask, send_file, request, render_template
 from src.calculadora import DatosCalculadora
 from src.calculadora import calculadora
 import tempfile
@@ -77,7 +76,7 @@ def home_page():
     total_pages = (total + per_page - 1) // per_page
 
     # Pasar las propiedades procesadas a la plantilla
-    return render_template('index.html', propiedades=propiedades, page=page, total_pages=total_pages, site_key=os.getenv("TURNSTILE_SITE_KEY"))
+    return render_template('index.html', propiedades=propiedades, page=page, total_pages=total_pages, turnstile_site_key=os.getenv("TURNSTILE_SITE_KEY"))
 
 
 @app.route('/calculadora', methods=['GET', 'POST'])
@@ -88,10 +87,8 @@ def calculadora():
         url = request.form['url']
         app.logger.info(f"URL recibida: {url}")
 
-        # try:
         scrape = scraper(url)
         datos = DatosCalculadora(scrape[0], scrape[1], scrape[2], scrape[3]) # nombre, precio, metros, poblacion
-        app.logger.info(f"Datos de la propiedad: {datos}")
 
         return render_template('calculadora.html', url=url, datos=datos)
     

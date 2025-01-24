@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/pico.min.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 <link rel="shortcut icon" href="{{ url_for('static', filename='icon.png') }}">
-<!-- <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script> -->
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 <title>Inmobiliario Tools</title>
 {% endblock %}
 
@@ -21,9 +21,9 @@
   <form action="{{url_for('calculadora')}}" method="POST" onsubmit="setAriaBusy()">
     <fieldset role="group">
       <input type="url" name="url" pattern="^https:\/\/www\.idealista\.com\/inmueble\/\d{9}\/.*$" placeholder="Introduce una URL válida ej.: https://www.idealista.com/inmueble/123456789/" />
-      <!-- <div class="cf-turnstile" data-sitekey="{{ site_key }}"></div> -->
       <input type="submit" value="Calcular">
     </fieldset>
+    <div class="cf-turnstile" data-sitekey="{{ turnstile_site_key }}"></div>
   </form>
   <h3>Novedades</h3>
   <p>Los inmuebles se actualizan diariamente con los siguientes filtros:</p>
