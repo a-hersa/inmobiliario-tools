@@ -2,6 +2,9 @@ import os
 import requests
 from bs4 import BeautifulSoup
 from unidecode import unidecode
+import logging
+
+logging.basicConfig(level=logging.DEBUG)
 
 headers = {
     'accept': 'application/json, text/javascript, */*; q=0.01',
@@ -21,24 +24,26 @@ headers = {
     'x-requested-with': 'XMLHttpRequest',
 }
 
-proxies = {
-    'http': f'http://{os.getenv("PROXY")}' 
-}
-
 def scraper(url):
 
     # request with ScrapingAnt
-    # encoded_url = requests.utils.quote(url, safe='')
-    # req_url = f'https://api.scrapingant.com/v2/general?url={encoded_url}&x-api-key={os.getenv("SCRAPINGANT")}&browser=false&proxy_country=ES'
-    # print(req_url)
-    # r = requests.get(req_url)
+    encoded_url = requests.utils.quote(url, safe='')
+    req_url = f'https://api.scrapingant.com/v2/general?url={encoded_url}&x-api-key={os.getenv("SCRAPINGANT")}&browser=false&proxy_country=ES'
+    print(req_url)
+    r = requests.get(req_url)
+
+    # Proxies for IPRoyal (use with and without headers)
+    # proxies = {
+    #    'http': f'http://{os.getenv("PROXY")}'
+    # }
     
     # request with IPRoyal and headers
     # r = requests.get(url, headers=headers, proxies=proxies)
 
     # request with IPRoyal without headers
-    r = requests.get(url, proxies=proxies)
-    soup = BeautifulSoup(r.text)
+    # r = requests.get(url, proxies=proxies)
+
+    soup = BeautifulSoup(r.text, features='html.parser')
     nombre = soup.find('span', class_='main-info__title-main').text
     precio = soup.find('span', class_='info-data-price').text.replace('.','').strip(' €')
     metros = soup.find('div', class_='info-features').span.text.strip('\n').replace(' m²','')

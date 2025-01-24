@@ -42,7 +42,6 @@ def get_db_connection():
 @app.route('/')
 def home_page():
     app.logger.info("Ruta principal accedida.")
-    print("Hola desde Flask en modo debug" if debug_mode else "Hola desde Flask en producción")
 
     # Obtener el número de página actual desde los parámetros de consulta
     page = request.args.get('page', 1, type=int)
