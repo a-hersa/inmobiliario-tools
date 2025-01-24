@@ -10,7 +10,6 @@ services:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - TZ=Europe/Madrid
-      - FLASK_DEBUG=${FLASK_DEBUG}
       - FLASK_CMD=gunicorn --bind 0.0.0.0:5000 -w 3 app:app  # Comando de producción
     networks:
       - flask_network
