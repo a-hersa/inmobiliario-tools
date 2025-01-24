@@ -15,6 +15,23 @@ services:
     networks:
       - flask_network
       - reverse-proxy
+
+  shiny:
+    build:
+      context: ./shiny
+      dockerfile: Dockerfile
+    container_name: shiny
+    ports:
+      - "8000:8000"
+    restart: always
+    environment:
+      - POSTGRES_DB=inmobiliario_db
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - TZ=Europe/Madrid
+    networks:
+      - flask_network
+      - reverse-proxy
   
   scrapy:
     image: ahersa/scrapy-inmobiliario:latest
