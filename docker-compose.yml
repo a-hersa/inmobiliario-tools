@@ -17,12 +17,9 @@ services:
       - reverse-proxy
 
   shiny:
-    build:
-      context: ./shiny
-      dockerfile: Dockerfile
-    container_name: shiny
-    ports:
-      - "8000:8000"
+    image: ahersa/shiny-inmobiliario:latest
+    container_name: inmobiliario-shiny
+    platform: linux/arm64/v8
     restart: always
     environment:
       - POSTGRES_DB=inmobiliario_db
