@@ -2,16 +2,15 @@
 FROM python:3.11-slim
 
 # Establecer el directorio de trabajo
+RUN mkdir /code
 WORKDIR /code
 
-# Copiar el archivo de dependencias
-COPY requirements.txt requirements.txt
-
 # Instalar dependencias de Python
-RUN pip install --no-cache-dir -r requirements.txt
+COPY requirements.txt /code/
+RUN pip install -r requirements.txt
 
 # Copiar el código de la aplicación
-COPY . .
+COPY . /code/
 
 # Comando para iniciar la aplicación
 CMD ["shiny", "run", "--host=0.0.0.0", "--port=8000", "app.py"]
