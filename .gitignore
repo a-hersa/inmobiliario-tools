@@ -1,6 +1,20 @@
 # Created by https://www.toptal.com/developers/gitignore/api/python
 # Edit at https://www.toptal.com/developers/gitignore?templates=python
 
+###  Inmobiliario Tools ###
+
+# Docker override file
+docker-compose.override.yml
+
+# Calculadora de rentabilidad
+test*.ipynb
+
+# VSCode
+.vscode
+
+# Test CSV in main folder
+/*.csv
+
 ### Python ###
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -9,12 +23,6 @@ __pycache__/
 
 # C extensions
 *.so
-
-# Calculadora de rentabilidad
-test*.ipynb
-
-# VSCode
-.vscode
 
 # Distribution / packaging
 .Python

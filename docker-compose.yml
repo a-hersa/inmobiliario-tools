@@ -10,15 +10,19 @@ services:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - TZ=Europe/Madrid
+      - FLASK_DEBUG=${FLASK_DEBUG}
+      - FLASK_CMD=gunicorn --bind 0.0.0.0:5000 -w 3 app:app  # Comando de producción
     networks:
       - flask_network
       - reverse-proxy
+  
   scrapy:
     image: ahersa/scrapy-inmobiliario:latest
     container_name: inmobiliario-scrapy
     platform: linux/arm64/v8
     restart: "no"
-    environment:
+    # Esto mantiene el contenedor en ejecución sin hacer nada.
+    environment: 
       - SCRAPINGANT=${SCRAPINGANT}
       - POSTGRES_DB=inmobiliario_db
       - POSTGRES_USER=${POSTGRES_USER}
@@ -26,6 +30,8 @@ services:
       - TZ=Europe/Madrid
     networks:
       - flask_network
+    command: tail -f /dev/null 
+
   postgres:
     image: postgres:17
     container_name: inmobiliario-postgres
@@ -47,6 +53,7 @@ services:
       - flask_network
     ports:
       - 5432:5432
+
   backup:
     # In production, it is advised to lock your image tag to a proper
     # release version instead of using `latest`.
@@ -69,10 +76,12 @@ services:
       # You can omit this if you do not want to keep local backups.
       - /mnt/docker-containers/backups/inmobiliario-tools_backups:/archive
       - ./configuration:/etc/dockervolumebackup/conf.d
+
 networks:
   flask_network: {}
   reverse-proxy:
     external: true
+
 volumes:
   inmobiliario-tools_postgres_data:
     external: true

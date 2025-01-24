@@ -8,15 +8,24 @@ from dotenv import load_dotenv
 import psycopg2
 import os
 from unidecode import unidecode
+import logging
 
 
 app=Flask(__name__)
 app.secret_key = 'your_secret_key'
 
+# Configurar Flask en modo debug según la variable de entorno
+debug_mode = os.getenv("FLASK_DEBUG", "0") == "1"
+app.config["DEBUG"] = debug_mode
+
+# Configurar logging
+if debug_mode:
+    logging.basicConfig(level=logging.DEBUG)
+else:
+    logging.basicConfig(level=logging.INFO)
+
 # Registra la función para usarla en la plantilla
 app.jinja_env.globals.update(calculadora=calculadora)
-
-# DATABASE_URL = os.getenv('DATABASE_URL')
 
 # Configurar la conexión a la base de datos PostgreSQL
 def get_db_connection():
@@ -32,6 +41,9 @@ def get_db_connection():
 
 @app.route('/')
 def home_page():
+    app.logger.info("Ruta principal accedida.")
+    print("Hola desde Flask en modo debug" if debug_mode else "Hola desde Flask en producción")
+
     # Obtener el número de página actual desde los parámetros de consulta
     page = request.args.get('page', 1, type=int)
     per_page = 20  # Elementos por página
@@ -72,19 +84,20 @@ def home_page():
 @app.route('/calculadora', methods=['GET', 'POST'])
 def calculadora():
     if request.method == 'POST':
+
         # Caso: Solicitud POST con URL del scraper
         url = request.form['url']
+        app.logger.info(f"URL recibida: {url}")
 
         # try:
         scrape = scraper(url)
         datos = DatosCalculadora(scrape[0], scrape[1], scrape[2], scrape[3]) # nombre, precio, metros, poblacion
+        app.logger.info(f"Datos de la propiedad: {datos}")
+
         return render_template('calculadora.html', url=url, datos=datos)
-        
-        # except Exception as e:
-        # #    flash(f"Hubo un problema al procesar la URL: {str(e)}, vuelva a intentarlo más tarde.", "error")
-        #     return render_template('calculadora.html', url=url, datos=None)
     
     elif request.method == 'GET':
+        
         # Caso: Solicitud GET con p_id de la base de datos
         p_id = request.args.get('p_id', type=int)
         if p_id is not None:
@@ -132,9 +145,6 @@ def descargar():
     # path = "src/plantilla.xlsx"
     return send_file(temp_excel_file.name, as_attachment=True)
 
-
 if __name__=='__main__':
     load_dotenv()
-    # app.run(host='0.0.0.0',debug=True)
-    # app.run(host='0.0.0.0',port=8080)
-    app.run(debug = False, host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=5000)
