@@ -13,7 +13,7 @@ DB_CONFIG = {
     "dbname": "inmobiliario_db",
     "user": f'{os.getenv("POSTGRES_USER")}',
     "password": f'{os.getenv("POSTGRES_PASSWORD")}',
-    "host": "postgres",  # El nombre del servicio en Docker Compose
+    "host": "inmobiliario-postgres",  # El nombre del servicio en Docker Compose
     "port": 5432
 }
 
