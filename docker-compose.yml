@@ -88,7 +88,7 @@ services:
       # copy of the backup will be stored there. You can override the
       # location inside of the container by setting `BACKUP_ARCHIVE`.
       # You can omit this if you do not want to keep local backups.
-      - /mnt/docker-containers/backups/inmobiliario-tools_backups:/archive
+      - /home/ubuntu/docker-containers/backups/inmobiliario-tools_backups:/archive
       - ./configuration:/etc/dockervolumebackup/conf.d
 
 networks:

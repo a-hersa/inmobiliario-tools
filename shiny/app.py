@@ -1,5 +1,5 @@
 import pandas as pd
-import psycopg2
+from sqlalchemy import create_engine
 from shiny import App, render, ui
 from plotnine import ggplot, aes, geom_bar, labs
 import os
@@ -8,22 +8,17 @@ from dotenv import load_dotenv
 # Cargar las variables de entorno desde el archivo .env
 load_dotenv()
 
-# Configuración de la conexión a PostgreSQL
-DB_CONFIG = {
-    "dbname": "inmobiliario_db",
-    "user": f'{os.getenv("POSTGRES_USER")}',
-    "password": f'{os.getenv("POSTGRES_PASSWORD")}',
-    "host": "inmobiliario-postgres",  # El nombre del servicio en Docker Compose
-    "port": 5432
-}
+# Configuración de la conexión a PostgreSQL con SQLAlchemy
+DB_URI = f'postgresql://{os.getenv("POSTGRES_USER")}:{os.getenv("POSTGRES_PASSWORD")}@inmobiliario-postgres:5432/inmobiliario_db'
+
+# Crear la conexión con SQLAlchemy
+engine = create_engine(DB_URI)
 
 # Función para obtener datos de la base de datos
 def fetch_data():
     try:
-        conn = psycopg2.connect(**DB_CONFIG)
         query = "SELECT poblacion, precio FROM propiedades;"
-        data = pd.read_sql_query(query, conn)
-        conn.close()
+        data = pd.read_sql_query(query, engine)
         return data
     except Exception as e:
         print(f"Error al conectar con la base de datos: {e}")
