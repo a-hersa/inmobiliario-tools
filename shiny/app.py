@@ -4,6 +4,9 @@ from shiny import App, render, ui
 from plotnine import ggplot, aes, geom_bar, labs
 import os
 from dotenv import load_dotenv
+import matplotlib
+
+matplotlib.use("Agg")  # Forzar backend sin interfaz gráfica
 
 # Cargar las variables de entorno desde el archivo .env
 load_dotenv()
