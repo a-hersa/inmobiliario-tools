@@ -4,4 +4,4 @@ sqlalchemy
 shiny
 pandas
 plotnine
-
+matplotlib
