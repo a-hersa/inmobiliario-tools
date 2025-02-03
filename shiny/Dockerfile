@@ -13,4 +13,4 @@ RUN pip install -r requirements.txt
 COPY . /code/
 
 # Comando para iniciar la aplicación
-CMD ["shiny", "run", "--host=0.0.0.0", "--port=8000", "--prefix-path=/datos", "app.py"]
+CMD ["shiny", "run", "--host=0.0.0.0", "--port=8000", "app.py"]
