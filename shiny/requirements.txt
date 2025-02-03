@@ -2,6 +2,12 @@ python-dotenv
 psycopg2-binary
 sqlalchemy
 shiny
+shiny 
+shinywidgets
+ipyleaflet
+geopy
+faicons
+requests
 pandas
 plotnine
 matplotlib

@@ -5,6 +5,7 @@
 
 # Docker override file
 docker-compose.override.yml
+backup.compose.yml
 
 # Calculadora de rentabilidad
 test*.ipynb
