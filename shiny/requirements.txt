@@ -4,5 +4,7 @@ sqlalchemy
 shiny
 numpy
 pandas
+plotly
 plotnine
 matplotlib
+shinywidgets
