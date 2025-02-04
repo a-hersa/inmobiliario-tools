@@ -15,9 +15,11 @@
 {% block body %}
 <main class="container">
   <h1>Inmobiliario Tools</h1>
-  <h6>Calcula la rentabilidad de una vivienda en el buscador o consulta las últimas novedades.</h6>
-  <br>
-  <h3>Calculadora de rentabilidad</h3>
+  <h6>Herramientas para buscar, calcular y analizar inmuebles</h6>
+  <p>&#127775;<a href="#calculadora-de-rentabilidad">Calculadora de rentabilidad</a> - Calcula la rentabilidad de una propiedad.</p>
+  <p>&#127775;<a href="#buscador-de-propiedades">Buscador de propiedades</a> - Consulta los inmuebles encontrados hasta ahora con los filtros indicados.</p>
+  <p>&#127775;<a href="https://data.proyectosal.com">Análisis de datos</a> - Analiza los datos en conjunto de las propiedades encontradas hasta ahora.</p>
+  <h2 id="calculadora-de-rentabilidad">Calculadora de rentabilidad</h3>
   <form action="{{url_for('calculadora')}}" method="POST" onsubmit="setAriaBusy()">
     <fieldset role="group">
       <input type="url" name="url" pattern="^https:\/\/www\.idealista\.com\/inmueble\/\d{9}\/.*$" placeholder="Introduce una URL válida ej.: https://www.idealista.com/inmueble/123456789/" />
@@ -25,9 +27,7 @@
     </fieldset>
     <div class="cf-turnstile" data-sitekey="{{ turnstile_site_key }}"></div>
   </form>
-  <h3>Análisis de datos</h3>
-  <p>Accede a un análisis de las propiedades actualizadas <a href="https://inmobiliario.proyectosal.com/datos">aquí</a>.</p>
-  <h3>Buscador de propiedades</h3>
+  <h2 id="buscador-de-propiedades">Buscador de propiedades</h3>
   <p>Los inmuebles se actualizan diariamente con los siguientes filtros:</p>
   <li>Mataró, Premiá de Mar, Granollers, Argentona, Sant Pol de Mar, Canet de Mar, Caldes d'Estrac, Arenys de Mar.</li>
   <li>Max. 120,000, 2 o más habitaciones, planta 1 o más (sin bajos).</li>
