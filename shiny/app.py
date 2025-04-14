@@ -11,6 +11,7 @@ import plotly.express as px
 from shiny import reactive
 from shiny.express import render, input, ui
 from shinywidgets import render_plotly
+import plotly.express as px
 
 from sqlalchemy import create_engine
 # from shiny import App, render, ui
@@ -40,17 +41,57 @@ def fetch_data():
     try:
         query = "SELECT * FROM propiedades;"
         data = pd.read_sql_query(query, engine)
+        data["fecha_updated"] = pd.to_datetime(data["fecha_updated"], format="%Y%m%d")\
+               .dt.strftime('%Y-%m')
+        data = data.sort_values("fecha_updated").reset_index(drop=True)
         return data
     except Exception as e:
         print(f"Error al conectar con la base de datos: {e}")
         return pd.DataFrame()
 
-with ui.layout_columns():
+# with ui.card(full_screen=True):
+#     @render.text
+#     def value():
+#         df = fetch_data()
+         
+#         return df.dtypes   
 
+with ui.sidebar():
+    ui.input_selectize(
+        "poblacion",
+        "Selecciona una población",
+        ["Mataró", "Granollers", "Cabrera de Mar"]
+    )
+    ui.input_numeric("bins", "Number of bins", 30)
+
+with ui.card(full_screen=True):
     @render_plotly
-    def plot1():
+    def hist():
         df = fetch_data()
-        return px.bar(df, x="poblacion", y="precio")
+        # Filtrar por la población seleccionada
+        df_filtered = df[df["poblacion"] == input.poblacion()]
+
+        # Evitar división por cero
+        df_filtered = df_filtered[df_filtered["metros"] > 0]
+
+        # Crear nueva columna con el cálculo
+        df_filtered["precio_m2"] = df_filtered["precio"] / df_filtered["metros"]
+
+        # Ordenar por fecha para evitar líneas desordenadas
+        df_filtered = df_filtered.sort_values(by="fecha_updated")
+
+        fig = px.line(df_filtered, x=df_filtered.index, y="precio_m2", nbins=input.bins(), title="Evolución del precio por metro cuadrado")
+
+        # Configurar formato del eje X para mostrar fechas en lugar de números grandes
+        fig.update_layout(
+            xaxis = dict(
+                tickmode = 'array',
+                tickvals = df_filtered.index,
+                ticktext = df_filtered["fecha_updated"]
+            )
+        )
+
+        return fig
 
     # @render_plotly
     # def plot2():

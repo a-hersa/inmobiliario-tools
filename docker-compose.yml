@@ -34,7 +34,7 @@ services:
     image: ahersa/scrapy-inmobiliario:latest
     container_name: inmobiliario-scrapy
     platform: linux/arm64/v8
-    restart: "no"
+    restart: unless-stopped
     # Esto mantiene el contenedor en ejecución sin hacer nada.
     environment: 
       - SCRAPINGANT=${SCRAPINGANT}
