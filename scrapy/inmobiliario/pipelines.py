@@ -58,6 +58,8 @@ class PropertyItemPipeline:
     def trim_name(self, name):
         if "en venta en " in name:
             nombre = name.capitalize().split("en venta en ", 1)[-1]
+        else:
+            nombre = name.capitalize()
         # Capitalizar el nombre
         nombre = nombre.capitalize()
         return nombre
@@ -210,7 +212,14 @@ class PostgresPipeline:
         self.connection.close()
 
     def process_item(self, item, spider):
-        p_id = int(item['p_id'])
+        # Extract p_id from URL and convert to int safely
+        try:
+            p_id_str = item['p_id'].split('/')[-2] if isinstance(item['p_id'], str) else str(item['p_id'])
+            p_id = int(p_id_str)
+        except (ValueError, IndexError, AttributeError):
+            spider.logger.error(f"Could not extract valid p_id from: {item['p_id']}")
+            raise DropItem(f"Invalid p_id: {item['p_id']}")
+        
         print(f"p_id value being processed: {p_id}")
 
         # Verificar condiciones para excluir

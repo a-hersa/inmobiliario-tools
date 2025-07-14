@@ -8,7 +8,7 @@ class NovedadesSpider(scrapy.Spider):
     
     # Puedes agregar más URLs a esta lista
     start_urls = [
-        'https://www.idealista.com/venta-viviendas/premia-de-mar-barcelona/con-precio-hasta_120000,de-dos-dormitorios,de-tres-dormitorios,de-cuatro-cinco-habitaciones-o-mas,publicado_ultimas-48-horas,ultimas-plantas,plantas-intermedias/',
+        'https://www.idealista.com/venta-viviendas/premia-de-mar-barcelona/con-precio-hasta_120000,de-dos-dormitorios,de-tres-dormitorios,de-cuatro-cinco-habitaciones-o-mas,ultimas-plantas,plantas-intermedias/',
         'https://www.idealista.com/venta-viviendas/argentona-barcelona/con-precio-hasta_120000,de-dos-dormitorios,de-tres-dormitorios,de-cuatro-cinco-habitaciones-o-mas,publicado_ultimas-48-horas,ultimas-plantas,plantas-intermedias/',
         'https://www.idealista.com/venta-viviendas/sant-pol-de-mar-barcelona/con-precio-hasta_120000,de-dos-dormitorios,de-tres-dormitorios,de-cuatro-cinco-habitaciones-o-mas,publicado_ultimas-48-horas,ultimas-plantas,plantas-intermedias/',
         'https://www.idealista.com/venta-viviendas/canet-de-mar-barcelona/con-precio-hasta_120000,de-dos-dormitorios,de-tres-dormitorios,de-cuatro-cinco-habitaciones-o-mas,publicado_ultimas-48-horas,ultimas-plantas,plantas-intermedias/',
@@ -46,10 +46,14 @@ class NovedadesSpider(scrapy.Spider):
         propiedad["nombre"] = response.css('span.main-info__title-main::text').get()
         # propiedad["fecha_new"] = response.css('#stats > p::text').get()
         propiedad["precio"] = response.css('span.info-data-price > span.txt-bold::text').get()
-        propiedad["metros"] = response.css('div.info-features > span::text').getall()[0] 
-        propiedad["habitaciones"]= response.css('div.info-features > span::text').getall()[1]
-        propiedad["planta"] = response.css('div.info-features > span::text').getall()[2]
-        propiedad["ascensor"] = response.css('div.info-features > span::text').getall()[2]
+        
+        # Safely extract features with fallback values
+        features = response.css('div.info-features > span::text').getall()
+        propiedad["metros"] = features[0] if len(features) > 0 else ""
+        propiedad["habitaciones"] = features[1] if len(features) > 1 else ""
+        propiedad["planta"] = features[2] if len(features) > 2 else ""
+        propiedad["ascensor"] = features[2] if len(features) > 2 else ""
+        
         propiedad["poblacion"] = response.css('span.main-info__title-minor::text').get()
         propiedad["url"] = response.url
         propiedad["descripcion"] = response.css('div.adCommentsLanguage > p::text').get()

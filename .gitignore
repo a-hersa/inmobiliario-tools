@@ -5,6 +5,7 @@
 
 # Docker override file
 docker-compose.override.yml
+docker-compose.local.yml
 backup.compose.yml
 
 # Calculadora de rentabilidad
