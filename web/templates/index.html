@@ -16,14 +16,16 @@
 
 {% block body %}
 <nav class="container-fluid">
-  <ul>
-    <li><strong><a href="/" style="text-decoration: none; color: inherit;">Inmobiliario Tools</a></strong></li>
-  </ul>
-  <ul>
-    <li><a href="{{ url_for('calculadora') }}">Calculadora</a></li>
-    <li><a href="https://data.proyectosal.com" target="_blank">Análisis de datos</a></li>
-    <li><a href="#" role="button" class="secondary">Login</a></li>
-  </ul>
+  <div class="container">
+    <ul>
+      <li><strong><a href="/" style="text-decoration: none; color: inherit;">Inmobiliario Tools</a></strong></li>
+    </ul>
+    <ul>
+      <li><a href="{{ url_for('calculadora') }}">Calculadora</a></li>
+      <li><a href="https://data.proyectosal.com" target="_blank">Análisis de datos</a></li>
+      <li><a href="#" role="button" class="secondary">Login</a></li>
+    </ul>
+  </div>
 </nav>
 
 <main class="container">
