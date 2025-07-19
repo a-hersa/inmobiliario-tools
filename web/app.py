@@ -169,7 +169,8 @@ def calculadora():
             else:
                 return "Propiedad no encontrada", 404
         else:
-            return "Parámetro p_id no proporcionado", 400
+            # No p_id provided - show blank calculator for manual input
+            return render_template('calculadora.html', url="", datos=None)
 
 
 @app.route('/descargar', methods=['POST'])

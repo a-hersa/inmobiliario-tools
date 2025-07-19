@@ -15,11 +15,20 @@
 {% endblock %}
 
 {% block body %}
+<nav class="container-fluid">
+  <ul>
+    <li><strong><a href="/" style="text-decoration: none; color: inherit;">Inmobiliario Tools</a></strong></li>
+  </ul>
+  <ul>
+    <li><a href="{{ url_for('calculadora') }}">Calculadora</a></li>
+    <li><a href="https://data.proyectosal.com" target="_blank">Análisis de datos</a></li>
+    <li><a href="#" role="button" class="secondary">Login</a></li>
+  </ul>
+</nav>
+
 <main class="container">
   <h1>Inmobiliario Tools</h1>
   <h6>Herramientas para buscar y analizar inmuebles</h6>
-  <p>&#127775;<a href="#buscador-de-propiedades">Buscador de propiedades</a> - Consulta los inmuebles encontrados hasta ahora con los filtros indicados.</p>
-  <p>&#127775;<a href="https://data.proyectosal.com" target="_blank">Análisis de datos</a> - Analiza los datos en conjunto de las propiedades encontradas hasta ahora.</p>
   
   <!-- Calculadora de rentabilidad section temporarily hidden
   <h2 id="calculadora-de-rentabilidad">Calculadora de rentabilidad</h3>

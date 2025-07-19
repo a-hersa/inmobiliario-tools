@@ -93,7 +93,75 @@
         </div>
       </form>
     {% else %}
-      <p>No se pudieron obtener los datos. Por favor, intenta de nuevo más tarde.</p>
+      <!-- Blank calculator for manual input -->
+      <form action="{{url_for('descargar')}}" method="POST">
+        <div class="grid">
+          <div>
+            <hgroup>
+              <h4>La vivienda</h4>
+              <h6>Nombre</h6><input name="nombre" value="" placeholder="Introduce el nombre de la propiedad">
+              <h6>URL</h6><input name="url" value="" placeholder="URL de la propiedad (opcional)">
+              <h6>Precio</h6><input type="number" name="precio" value="" placeholder="Precio de venta">
+              <h6>Metros</h6><input type="number" name="metros" value="" placeholder="Metros cuadrados">
+            </hgroup>
+            <hgroup>
+              <h4>Coste de compra</h4>
+              <hgroup>
+                <h6>Precio de compra</h6><input type="number" id="p_compra" name="p_compra" value="" placeholder="Precio de compra">
+                <h6>ITP (10% Catalunya)</h6><input type="number" id="itp" name="itp" value="" placeholder="Se calcula automáticamente">
+                <h6>Reforma</h6><input type="number" id="reforma" name="reforma" value="6000">
+                <h6>Notaria</h6><input type="number" id="notaria" name="notaria" value="1000">
+                <h6>Registro</h6><input type="number" id="registro" name="registro" value="0">
+                <h6>Comisión agencia</h6><input type="number" id="agencia" name="agencia" value="0">
+                <h6>Tasación</h6><input type="number" id="tasacion" name="tasacion" value="200">
+              </hgroup>
+            </hgroup>
+          </div>
+          <div>
+            <hgroup>
+              <h4>Gastos anuales</h4>
+              <hgroup>
+                <h6>IBI</h6><input type="number" id="ibi" name="ibi" value="450">
+                <h6>Basuras</h6><input type="number" id="basuras" name="basuras" value="0">
+                <h6>Comunidad</h6><input type="number" id="comunidad" name="comunidad" value="400">
+                <h6>Seguros</h6><input type="number" id="seguros" name="seguros" value="400">
+              </hgroup>
+            </hgroup>
+            <hgroup>
+              <h4>Ingresos mensuales</h4>
+              <hgroup>
+                <h6>Cuota alquiler</h6><input type="number" id="alquiler" name="alquiler" value="" placeholder="Alquiler mensual estimado">
+              </hgroup>
+            </hgroup>
+            <hgroup>
+              <h4>Hipoteca</h4>
+              <hgroup>
+                <h6>% Financiado</h6><input type="number" id="financiado" name="financiado" value="80">
+                <h6>Hipoteca</h6><input type="number" id="hipoteca" readonly="readonly" value="">
+                <h6>Capital a aportar</h6><input type="number" id="a_aportar" readonly="readonly" value="">
+                <h6>Plazo (años)</h6><input type="number" id="plazo" name="plazo" value="30">
+                <h6>Tipo de interés</h6><input type="number" id="intereses_anuales" name="intereses_anuales" value="3.5" step="0.1"><span>%</span>
+                <h6>Cuota a pagar</h6><input type="number" id="cuota" readonly="readonly" value="">
+                <h6>Intereses (promedio)</h6><input type="number" id="cuota_intereses" readonly="readonly" value="">
+                <h6>Amortización (promedio)</h6><input type="number" id="cuota_amortizacion" readonly="readonly" value="">
+              </hgroup>
+            </hgroup>
+          </div>
+          <div>
+            <hgroup>
+              <h4>Rentabilidad</h4>
+              <hgroup>
+                <h6>Rentabilidad bruta</h6><input type="number" id="r_bruta" name="r_bruta" readonly="readonly" value="">
+                <h6>Rentabilidad neta</h6><input type="number" id="r_neta" readonly="readonly" value="">
+                <h6>Cash flow</h6><input type="number" id="c_flow" readonly="readonly" value="">
+                <h6>Cash on cash</h6><input type="number" id="c_oncash" readonly="readonly" value="">
+                <h6>ROCE</h6><input type="number" id="roce" readonly="readonly" value="">
+                <input type="submit" value="Descargar en Excel"/>
+              </hgroup>
+            </hgroup>
+          </div>
+        </div>
+      </form>
     {% endif %}
 </main>
 <script>
