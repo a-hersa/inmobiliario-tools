@@ -47,7 +47,51 @@
   <li>Mataró, Premiá de Mar, Granollers, Argentona, Sant Pol de Mar, Canet de Mar, Caldes d'Estrac, Arenys de Mar.</li>
   <li>Max. 120,000, 2 o más habitaciones, planta 1 o más (sin bajos).</li>
   <br>
-  <table>
+  
+  <!-- Filtros -->
+  <details>
+    <summary>Filtros de búsqueda</summary>
+    <div class="grid">
+      <div>
+        <label for="filter-nombre">Nombre</label>
+        <input type="text" id="filter-nombre" placeholder="Buscar por nombre...">
+      </div>
+      <div>
+        <label for="filter-poblacion">Población</label>
+        <select id="filter-poblacion">
+          <option value="">Todas las poblaciones</option>
+        </select>
+      </div>
+      <div>
+        <label for="filter-estado">Estado</label>
+        <select id="filter-estado">
+          <option value="">Todos los estados</option>
+        </select>
+      </div>
+    </div>
+    <div class="grid">
+      <div>
+        <label for="filter-precio-min">Precio mínimo</label>
+        <input type="number" id="filter-precio-min" placeholder="€">
+      </div>
+      <div>
+        <label for="filter-precio-max">Precio máximo</label>
+        <input type="number" id="filter-precio-max" placeholder="€">
+      </div>
+      <div>
+        <label for="filter-metros-min">Metros mínimos</label>
+        <input type="number" id="filter-metros-min" placeholder="m²">
+      </div>
+      <div>
+        <label for="filter-metros-max">Metros máximos</label>
+        <input type="number" id="filter-metros-max" placeholder="m²">
+      </div>
+    </div>
+    <button type="button" onclick="clearFilters()">Limpiar filtros</button>
+  </details>
+  <br>
+  
+  <table id="propiedades-table">
     <thead>
       <tr>
         <th scope="col">Nombre</th>
@@ -93,20 +137,153 @@
 </main>
 {% endblock %}
 <script>
-  document.getElementById('url-form').addEventListener('submit', function(event) {
-    const urlInput = document.getElementById('idealista-url');
-    const errorMessage = document.getElementById('error-message');
-    const url = urlInput.value;
-
-    // Expresión regular para validar el dominio
-    const pattern = /^https:\/\/www\.idealista\.com\/inmueble\/\d{9}\/.*$/;
-
-    if (!pattern.test(url)) {
-      event.preventDefault(); // Previene el envío del formulario
-      errorMessage.style.display = 'inline'; // Muestra el mensaje de error
-    } else {
-      errorMessage.style.display = 'none'; // Oculta el mensaje de error
-    }
+  // Initialize filters when page loads
+  document.addEventListener('DOMContentLoaded', function() {
+    initializeFilters();
+    setupFilterEvents();
   });
+
+  function initializeFilters() {
+    const table = document.getElementById('propiedades-table');
+    const poblacionSelect = document.getElementById('filter-poblacion');
+    const estadoSelect = document.getElementById('filter-estado');
+    
+    // Get unique values for dropdown filters
+    const poblaciones = new Set();
+    const estados = new Set();
+    
+    const rows = table.querySelectorAll('tbody tr');
+    rows.forEach(row => {
+      const cells = row.querySelectorAll('td, th');
+      if (cells.length >= 8) {
+        const poblacion = cells[6].textContent.trim(); // poblacion column
+        const estado = cells[5].textContent.trim();    // estado column
+        
+        if (poblacion) poblaciones.add(poblacion);
+        if (estado) estados.add(estado);
+      }
+    });
+    
+    // Populate dropdowns
+    poblaciones.forEach(poblacion => {
+      const option = document.createElement('option');
+      option.value = poblacion;
+      option.textContent = poblacion;
+      poblacionSelect.appendChild(option);
+    });
+    
+    estados.forEach(estado => {
+      const option = document.createElement('option');
+      option.value = estado;
+      option.textContent = estado;
+      estadoSelect.appendChild(option);
+    });
+  }
+
+  function setupFilterEvents() {
+    // Add event listeners to all filter inputs
+    const filterInputs = [
+      'filter-nombre', 'filter-poblacion', 'filter-estado',
+      'filter-precio-min', 'filter-precio-max', 
+      'filter-metros-min', 'filter-metros-max'
+    ];
+    
+    filterInputs.forEach(id => {
+      const element = document.getElementById(id);
+      if (element) {
+        element.addEventListener('input', applyFilters);
+        element.addEventListener('change', applyFilters);
+      }
+    });
+  }
+
+  function applyFilters() {
+    const table = document.getElementById('propiedades-table');
+    const rows = table.querySelectorAll('tbody tr');
+    
+    // Get filter values
+    const nombreFilter = document.getElementById('filter-nombre').value.toLowerCase();
+    const poblacionFilter = document.getElementById('filter-poblacion').value;
+    const estadoFilter = document.getElementById('filter-estado').value;
+    const precioMin = parseFloat(document.getElementById('filter-precio-min').value) || 0;
+    const precioMax = parseFloat(document.getElementById('filter-precio-max').value) || Infinity;
+    const metrosMin = parseFloat(document.getElementById('filter-metros-min').value) || 0;
+    const metrosMax = parseFloat(document.getElementById('filter-metros-max').value) || Infinity;
+    
+    let visibleCount = 0;
+    
+    rows.forEach(row => {
+      const cells = row.querySelectorAll('td, th');
+      if (cells.length >= 8) {
+        const nombre = cells[0].textContent.toLowerCase();
+        const precioText = cells[2].textContent.replace(/[€,\s]/g, '');
+        const precio = parseFloat(precioText) || 0;
+        const metrosText = cells[3].textContent.replace(/[m²\s]/g, '');
+        const metros = parseFloat(metrosText) || 0;
+        const estado = cells[5].textContent.trim();
+        const poblacion = cells[6].textContent.trim();
+        
+        // Apply filters
+        const matchesNombre = !nombreFilter || nombre.includes(nombreFilter);
+        const matchesPoblacion = !poblacionFilter || poblacion === poblacionFilter;
+        const matchesEstado = !estadoFilter || estado === estadoFilter;
+        const matchesPrecio = precio >= precioMin && precio <= precioMax;
+        const matchesMetros = metros >= metrosMin && metros <= metrosMax;
+        
+        const isVisible = matchesNombre && matchesPoblacion && matchesEstado && 
+                         matchesPrecio && matchesMetros;
+        
+        row.style.display = isVisible ? '' : 'none';
+        if (isVisible) visibleCount++;
+      }
+    });
+    
+    // Update results count
+    updateResultsCount(visibleCount);
+  }
+
+  function updateResultsCount(count) {
+    let countElement = document.getElementById('results-count');
+    if (!countElement) {
+      countElement = document.createElement('p');
+      countElement.id = 'results-count';
+      countElement.style.fontWeight = 'bold';
+      const table = document.getElementById('propiedades-table');
+      table.parentNode.insertBefore(countElement, table);
+    }
+    countElement.textContent = `Mostrando ${count} propiedades`;
+  }
+
+  function clearFilters() {
+    // Clear all filter inputs
+    document.getElementById('filter-nombre').value = '';
+    document.getElementById('filter-poblacion').value = '';
+    document.getElementById('filter-estado').value = '';
+    document.getElementById('filter-precio-min').value = '';
+    document.getElementById('filter-precio-max').value = '';
+    document.getElementById('filter-metros-min').value = '';
+    document.getElementById('filter-metros-max').value = '';
+    
+    // Reapply filters (which will show all rows)
+    applyFilters();
+  }
+
+  // Legacy form validation (keep if needed)
+  if (document.getElementById('url-form')) {
+    document.getElementById('url-form').addEventListener('submit', function(event) {
+      const urlInput = document.getElementById('idealista-url');
+      const errorMessage = document.getElementById('error-message');
+      const url = urlInput.value;
+
+      const pattern = /^https:\/\/www\.idealista\.com\/inmueble\/\d{9}\/.*$/;
+
+      if (!pattern.test(url)) {
+        event.preventDefault();
+        errorMessage.style.display = 'inline';
+      } else {
+        errorMessage.style.display = 'none';
+      }
+    });
+  }
 </script>
 </html>
