@@ -2,7 +2,6 @@ services:
   web:
     image: ahersa/web-inmobiliario:latest
     container_name: inmobiliario-web
-    platform: linux/arm64/v8
     restart: always
     environment:
       - SCRAPINGANT=${SCRAPINGANT}
@@ -19,7 +18,6 @@ services:
   shiny:
     image: ahersa/shiny-inmobiliario:latest
     container_name: inmobiliario-shiny
-    platform: linux/arm64/v8
     restart: always
     environment:
       - POSTGRES_DB=inmobiliario_db
@@ -33,7 +31,6 @@ services:
   scrapy:
     image: ahersa/scrapy-inmobiliario:latest
     container_name: inmobiliario-scrapy
-    platform: linux/arm64/v8
     restart: unless-stopped
     # Esto mantiene el contenedor en ejecución sin hacer nada.
     environment: 
@@ -49,7 +46,6 @@ services:
   postgres:
     image: postgres:17
     container_name: inmobiliario-postgres
-    platform: linux/arm64/v8
     restart: always
     environment:
       - POSTGRES_DB=inmobiliario_db
@@ -58,38 +54,10 @@ services:
       - TZ=Europe/Madrid
     volumes:
       - inmobiliario-tools_postgres_data:/var/lib/postgresql/data
-    labels:
-      # This means the container will be stopped during backup to ensure
-      # backup integrity. You can omit this label if stopping during backup
-      # not required.
-      - docker-volume-backup.stop-during-backup=true
     networks:
       - flask_network
     ports:
       - 5432:5432
-
-  backup:
-    # In production, it is advised to lock your image tag to a proper
-    # release version instead of using `latest`.
-    # Check https://github.com/offen/docker-volume-backup/releases
-    # for a list of available releases.
-    image: offen/docker-volume-backup:v2.42.0
-    container_name: inmobiliario-backups
-    restart: always
-    #  env_file: ./backup.env # see below for configuration reference
-    volumes:
-      - inmobiliario-tools_postgres_data:/backup/my-app-backup:ro
-      # Mounting the Docker socket allows the script to stop and restart
-      # the container during backup. You can omit this if you don't want
-      # to stop the container. In case you need to proxy the socket, you can
-      # also provide a location by setting `DOCKER_HOST` in the container
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      # If you mount a local directory or volume to `/archive` a local
-      # copy of the backup will be stored there. You can override the
-      # location inside of the container by setting `BACKUP_ARCHIVE`.
-      # You can omit this if you do not want to keep local backups.
-      - /home/ubuntu/docker-containers/backups/inmobiliario-tools_backups:/archive
-      - ./configuration:/etc/dockervolumebackup/conf.d
 
 networks:
   flask_network: {}
