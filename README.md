@@ -14,3 +14,7 @@ Edit the env-template file
 
 ### UFW
 add ports in server's dashboard
+
+
+## Cronjob
+0 7 * * * cd [WORKDIR] && sudo docker exec inmobiliario-scrapy scrapy crawl propiedades
