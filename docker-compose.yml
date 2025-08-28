@@ -4,7 +4,7 @@ services:
     container_name: inmobiliario-web
     restart: always
     environment:
-      - SCRAPINGANT=${SCRAPINGANT}
+      - SCRAPINGANT_API_KEY=${SCRAPINGANT_API_KEY}
       - POSTGRES_DB=inmobiliario_db
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
