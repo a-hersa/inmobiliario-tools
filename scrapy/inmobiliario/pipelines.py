@@ -201,12 +201,6 @@ class PostgresPipeline:
         )
         self.cursor = self.connection.cursor()
 
-        # Tables are now created via postgres init scripts
-        # Just ensure fecha_crawl column exists for migration
-        self.cursor.execute('''
-            ALTER TABLE propiedades 
-            ADD COLUMN IF NOT EXISTS fecha_crawl TIMESTAMP
-        ''')
         self.connection.commit()
 
     def close_spider(self, spider):
@@ -311,7 +305,7 @@ class PostgresPipeline:
                     # Insert item into database
                     self.cursor.execute("""
                         INSERT INTO propiedades (p_id, nombre, fecha_crawl, precio, metros, habitaciones, planta, ascensor, poblacion, url, descripcion, estatus)
-                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                     """, (
                         p_id,
                         item.get('nombre'),
