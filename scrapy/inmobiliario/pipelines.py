@@ -160,6 +160,9 @@ class PropertyItemPipeline:
         return text
     
     def get_status(self, description):
+        if description is None:
+            return ""
+            
         ocupado_list = ["ocupado por persona", "inmueble sin posesi", "ocupada por"]
         subasta_list = ["subasta"]
         arrendado_list = ["arrendado a tercero"]
