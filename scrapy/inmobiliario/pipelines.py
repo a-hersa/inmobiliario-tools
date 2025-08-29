@@ -148,6 +148,8 @@ class PropertyItemPipeline:
         return city
 
     def smooth_text(self, text):
+        if text is None:
+            return ""
         text = text.replace('\n', '')
         # Reemplazar múltiples espacios con uno solo y eliminar saltos de línea
         text = re.sub(r'\s+', ' ', text)
