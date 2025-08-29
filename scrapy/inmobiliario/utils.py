@@ -1,6 +1,6 @@
 import re
 
-def extract_location_from_title(self, raw_title):
+def extract_location_from_title(raw_title):
     """
     Extract location using prioritized strategies:
     1. Last part after the last comma
