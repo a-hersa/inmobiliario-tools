@@ -48,7 +48,7 @@ class PropiedadesSpider(scrapy.Spider):
             
             # Extract location from title and clean title
             if raw_title:
-                clean_title, location = self.extract_location_from_title(raw_title)
+                clean_title, location = extract_location_from_title(raw_title)
                 propiedad['nombre'] = clean_title
                 propiedad['poblacion'] = location
             else:
