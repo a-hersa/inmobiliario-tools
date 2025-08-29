@@ -20,11 +20,11 @@ class PropertyItemPipeline:
             # Por ejemplo, puedes limpiar los datos, calcular nuevos valores, etc.
 
             # Ejemplo: Convertir el precio a un formato numérico
-            item['p_id'] = self.convert_to_p_id(item['p_id'])
+            # p_id is already an integer from the spider, no conversion needed
 
             item['nombre'] = self.trim_name(item['nombre'])
 
-            item['fecha_crawl'] = datetime.today().strftime('%Y-%m-%d')
+            # fecha_crawl is already set in spider with current timestamp
 
             item['precio'] = self.convert_price_to_number(item['precio'])
 
@@ -34,13 +34,16 @@ class PropertyItemPipeline:
 
             item['planta'] = self.convert_floor_to_number(item['planta'])
 
-            item['ascensor'] = self.convert_lift_to_number(item['ascensor'], item['descripcion'])
+            # ascensor is already set in spider based on item-detail extraction
 
             item['poblacion'] = self.extract_city(item['poblacion'])
 
             item['descripcion'] = self.smooth_text(item['descripcion'])
 
             item['estatus'] = self.get_status(item['descripcion'])
+            
+
+        return item  # Devuelve el item modificado
             
 
         return item  # Devuelve el item modificado
@@ -129,13 +132,13 @@ class PropertyItemPipeline:
             return 0
         
     def convert_lift_to_number(self, lift_str, desc_str):
-        if 'con ascensor' in lift_str:
+        if lift_str and 'con ascensor' in lift_str:
             return 1
-        elif 'sin ascensor' in lift_str:
+        elif lift_str and 'sin ascensor' in lift_str:
             return 0
-        elif 'con ascensor' in desc_str:
+        elif desc_str and 'con ascensor' in desc_str:
             return 1
-        elif 'sin ascensor' in desc_str:
+        elif desc_str and 'sin ascensor' in desc_str:
             return 0
         else:
             return 2
