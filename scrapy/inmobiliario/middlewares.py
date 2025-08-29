@@ -25,8 +25,6 @@ class ScrapingAntProxyMiddleware:
         return s
 
     def process_request(self, request, spider):
-
-        spider.logger.info(f"Using ScrapingAnt API Key: {self.api_key}")
         # Only process requests to idealista.com through ScrapingAnt
         if 'idealista.com' not in request.url:
             spider.logger.debug(f"Skipping ScrapingAnt for non-idealista URL: {request.url}")
