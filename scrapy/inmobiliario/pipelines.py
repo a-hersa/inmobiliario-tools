@@ -44,9 +44,6 @@ class PropertyItemPipeline:
             
 
         return item  # Devuelve el item modificado
-            
-
-        return item  # Devuelve el item modificado
     
     def convert_to_p_id(self, url):
         try:
@@ -56,6 +53,8 @@ class PropertyItemPipeline:
             return
         
     def trim_name(self, name):
+        if name is None:
+            return "Propiedad sin título"
         if "en venta en " in name:
             nombre = name.capitalize().split("en venta en ", 1)[-1]
         else:
@@ -100,6 +99,8 @@ class PropertyItemPipeline:
         return postgres_date
 
     def convert_price_to_number(self, price_str):
+        if price_str is None:
+            return None
         # Ejemplo: convertir una cadena de precio en un número
         # Elimina símbolos de moneda y comas, luego convierte a float
         price_str = price_str.replace('$', '').replace('.', '').strip()
@@ -109,6 +110,8 @@ class PropertyItemPipeline:
             return None
         
     def convert_meters_to_number(self, meters_str):
+        if meters_str is None or meters_str == "":
+            return None
         meters_str = meters_str.replace('\n', '').replace(' m²', '')
         try:
             return int(meters_str)
@@ -116,6 +119,8 @@ class PropertyItemPipeline:
             return None
         
     def convert_rooms_to_number(self, rooms_str):
+        if rooms_str is None or rooms_str == "":
+            return None
         rooms_str = rooms_str.replace('\n', '').replace('hab.', '').strip()
         try:
             return int(rooms_str)
@@ -123,10 +128,12 @@ class PropertyItemPipeline:
             return None
         
     def convert_floor_to_number(self, floor_str):
-        floor_str = re.search(r'\d+', floor_str)
+        if floor_str is None:
+            return 0
+        floor_match = re.search(r'\d+', floor_str)
 
-        if floor_str:
-            floor_num = int(floor_str.group())
+        if floor_match:
+            floor_num = int(floor_match.group())
             return floor_num
         else:
             return 0
@@ -144,7 +151,10 @@ class PropertyItemPipeline:
             return 2
         
     def extract_city(self, city_str):
-        city = city_str.split(',')[-1].strip()
+        if city_str is None or city_str.strip() == "":
+            return "Ubicación no especificada"
+        # City is now extracted directly from title, just clean it up
+        city = city_str.strip()
         return city
 
     def smooth_text(self, text):
