@@ -14,6 +14,9 @@ services:
     networks:
       - flask_network
       - reverse-proxy
+    depends_on:
+      postgres:
+        condition: service_healthy
 
   shiny:
     image: ahersa/shiny-inmobiliario:latest
@@ -27,6 +30,9 @@ services:
     networks:
       - flask_network
       - reverse-proxy
+    depends_on:
+      postgres:
+        condition: service_healthy
   
   scrapy:
     image: ahersa/scrapy-inmobiliario:latest
@@ -42,6 +48,9 @@ services:
     networks:
       - flask_network
     command: tail -f /dev/null 
+    depends_on:
+      postgres:
+        condition: service_healthy
 
   postgres:
     image: postgres:17
@@ -54,10 +63,16 @@ services:
       - TZ=Europe/Madrid
     volumes:
       - inmobiliario-tools_postgres_data:/var/lib/postgresql/data
+      - ./postgres:/docker-entrypoint-initdb.d
     networks:
       - flask_network
     ports:
       - 5432:5432
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d inmobiliario_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 networks:
   flask_network: {}
