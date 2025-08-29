@@ -24,10 +24,7 @@ class PropertyItemPipeline:
 
             item['nombre'] = self.trim_name(item['nombre'])
 
-            item['fecha_new'] = datetime.today().strftime('%Y-%m-%d')
-            # item['fecha_new'] = self.convert_str_to_date(item['fecha_new'])
-            
-            item['fecha_updated'] = datetime.today().strftime('%Y-%m-%d')
+            item['fecha_crawl'] = datetime.today().strftime('%Y-%m-%d')
 
             item['precio'] = self.convert_price_to_number(item['precio'])
 
@@ -191,8 +188,7 @@ class PostgresPipeline:
             CREATE TABLE IF NOT EXISTS propiedades (
                 p_id INT PRIMARY KEY,
                 nombre VARCHAR(255),
-                fecha_new DATE,
-                fecha_updated DATE,
+                fecha_crawl DATE,
                 precio INT,
                 metros INT,
                 habitaciones INT,
@@ -235,7 +231,6 @@ class PostgresPipeline:
             # Verificar si el item ya existe en la base de datos
             self.cursor.execute("SELECT 1 FROM propiedades WHERE p_id = %s", (p_id,))
             result = self.cursor.fetchone()
-            # fecha_updated = datetime.today().strftime('%Y-%m-%d')  # Fecha actual
 
             if result:
                 # Si ya existe el registro, actualizamos el contenido
@@ -244,7 +239,7 @@ class PostgresPipeline:
                 self.cursor.execute('''
                     UPDATE propiedades
                     SET nombre = %s,
-                        fecha_updated = %s,
+                        fecha_crawl = %s,
                         precio = %s,
                         metros = %s,
                         habitaciones = %s,
@@ -257,7 +252,7 @@ class PostgresPipeline:
                     WHERE p_id = %s
                 ''', (
                     item.get('nombre'),
-                    item.get('fecha_updated'),
+                    item.get('fecha_crawl'),
                     item.get('precio'),
                     item.get('metros'),
                     item.get('habitaciones'),
@@ -278,13 +273,12 @@ class PostgresPipeline:
 
                 # Insert item into database
                 self.cursor.execute("""
-                    INSERT INTO propiedades (p_id, nombre, fecha_new, fecha_updated, precio, metros, habitaciones, planta, ascensor, poblacion, url, descripcion, estatus)
+                    INSERT INTO propiedades (p_id, nombre, fecha_crawl, precio, metros, habitaciones, planta, ascensor, poblacion, url, descripcion, estatus)
                     VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                 """, (
                     p_id,
                     item.get('nombre'),
-                    item.get('fecha_new'),
-                    item.get('fecha_updated'),
+                    item.get('fecha_crawl'),
                     item.get('precio'),
                     item.get('metros'),
                     item.get('habitaciones'),
