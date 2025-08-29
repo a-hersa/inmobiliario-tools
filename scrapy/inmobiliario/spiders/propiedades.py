@@ -78,7 +78,7 @@ class PropiedadesSpider(scrapy.Spider):
                         propiedad['ascensor'] = 1
             
             # Descripción (si está disponible en el listado)
-            propiedad['descripcion'] = container.css('p.item-description::text').get()
+            propiedad['descripcion'] = container.css('p.ellipsis::text').get() or ''
             
             # Campos adicionales con valores por defecto
             propiedad['fecha_crawl'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
