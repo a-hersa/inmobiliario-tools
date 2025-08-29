@@ -5,7 +5,7 @@
 
 
 # useful for handling different item types with a single interface
-from inmobiliario.items import PropertyItem
+from inmobiliario.items import PropertyItem, UrlItem
 import re
 import psycopg2
 from scrapy.exceptions import DropItem
