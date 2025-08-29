@@ -201,22 +201,11 @@ class PostgresPipeline:
         )
         self.cursor = self.connection.cursor()
 
-        # Crear la tabla si no existe
+        # Tables are now created via postgres init scripts
+        # Just ensure fecha_crawl column exists for migration
         self.cursor.execute('''
-            CREATE TABLE IF NOT EXISTS propiedades (
-                p_id INT PRIMARY KEY,
-                nombre VARCHAR(255),
-                fecha_crawl DATE,
-                precio INT,
-                metros INT,
-                habitaciones INT,
-                planta INT,
-                ascensor INT,
-                poblacion VARCHAR(255),
-                url VARCHAR(255),
-                descripcion VARCHAR(4000),
-                estatus VARCHAR(255)            
-            )
+            ALTER TABLE propiedades 
+            ADD COLUMN IF NOT EXISTS fecha_crawl TIMESTAMP
         ''')
         self.connection.commit()
 
@@ -226,99 +215,129 @@ class PostgresPipeline:
         self.connection.close()
 
     def process_item(self, item, spider):
-        # Extract p_id from URL and convert to int safely
-        try:
-            p_id_str = item['p_id'].split('/')[-2] if isinstance(item['p_id'], str) else str(item['p_id'])
-            p_id = int(p_id_str)
-        except (ValueError, IndexError, AttributeError):
-            spider.logger.error(f"Could not extract valid p_id from: {item['p_id']}")
-            raise DropItem(f"Invalid p_id: {item['p_id']}")
-        
-        print(f"p_id value being processed: {p_id}")
-
-        # Verificar condiciones para excluir
-        planta = item.get('planta')
-        ascensor = item.get('ascensor')
-
-        # Condición para excluir la propiedad
-        if planta > 3 and ascensor == 0:
-            print(f"Property excluded: {p_id}, Planta: {planta}, Ascensor: {ascensor}")
-            return
-            
-        try:
-            # Verificar si el item ya existe en la base de datos
-            self.cursor.execute("SELECT 1 FROM propiedades WHERE p_id = %s", (p_id,))
-            result = self.cursor.fetchone()
-
-            if result:
-                # Si ya existe el registro, actualizamos el contenido
-                print(f"Item already exists. Updating item: {p_id}")
-
-                self.cursor.execute('''
-                    UPDATE propiedades
-                    SET nombre = %s,
-                        fecha_crawl = %s,
-                        precio = %s,
-                        metros = %s,
-                        habitaciones = %s,
-                        planta = %s,
-                        ascensor = %s,
-                        poblacion = %s,
-                        url = %s,
-                        descripcion = %s,
-                        estatus = %s
-                    WHERE p_id = %s
-                ''', (
-                    item.get('nombre'),
-                    item.get('fecha_crawl'),
-                    item.get('precio'),
-                    item.get('metros'),
-                    item.get('habitaciones'),
-                    item.get('planta'),
-                    item.get('ascensor'),
-                    item.get('poblacion'),
-                    item.get('url'),
-                    item.get('descripcion'),
-                    item.get('estatus'),
-                    p_id
-                ))
-
-                # Confirmar cambios después de la actualización
-                self.connection.commit()
-                print(f"Item updated successfully: {p_id}")
-
-            else:
-
-                # Insert item into database
+        # Handle UrlItem for municipios spider
+        if isinstance(item, UrlItem):
+            try:
+                url = item['url']
+                spider_name = spider.name
+                
+                # Insert URL into municipios table (ignore if already exists)
                 self.cursor.execute("""
-                    INSERT INTO propiedades (p_id, nombre, fecha_crawl, precio, metros, habitaciones, planta, ascensor, poblacion, url, descripcion, estatus)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-                """, (
-                    p_id,
-                    item.get('nombre'),
-                    item.get('fecha_crawl'),
-                    item.get('precio'),
-                    item.get('metros'),
-                    item.get('habitaciones'),
-                    item.get('planta'),
-                    item.get('ascensor'),
-                    item.get('poblacion'),
-                    item.get('url'),
-                    item.get('descripcion'),
-                    item.get('estatus')
-                ))
-
-                # Confirmar cambios en la base de datos
+                    INSERT INTO municipios (url, spider_name) 
+                    VALUES (%s, %s) 
+                    ON CONFLICT (url) DO NOTHING
+                """, (url, spider_name))
+                
                 self.connection.commit()
-                print(f"Item inserted successfully: {p_id}")
-
-        except psycopg2.Error as e:
-            print(f"Database error: {e}")
-            self.connection.rollback()
-            raise DropItem(f"Database error: {e}")
+                spider.logger.debug(f"URL saved to municipios table: {url}")
+                
+            except psycopg2.Error as e:
+                spider.logger.error(f"Database error saving URL: {e}")
+                self.connection.rollback()
+                raise DropItem(f"Database error: {e}")
+            
+            return item
         
-        except Exception as e:
-            print(f"Unexpected error: {e}")
-            raise DropItem(f"Unexpected error: {e}")
+        # Handle PropertyItem for property spiders
+        elif isinstance(item, PropertyItem):
+            # p_id is already an integer from the spider
+            try:
+                p_id = int(item['p_id'])
+            except (ValueError, TypeError):
+                spider.logger.error(f"Could not extract valid p_id from: {item['p_id']}")
+                raise DropItem(f"Invalid p_id: {item['p_id']}")
+            
+            print(f"p_id value being processed: {p_id}")
+
+            # Verificar condiciones para excluir
+            planta = item.get('planta')
+            ascensor = item.get('ascensor')
+
+            # Condición para excluir la propiedad (fix type checking)
+            try:
+                planta_num = int(planta) if planta and str(planta).strip() else 0
+                ascensor_num = int(ascensor) if ascensor is not None else 0
+                
+                if planta_num > 3 and ascensor_num == 0:
+                    print(f"Property excluded: {p_id}, Planta: {planta_num}, Ascensor: {ascensor_num}")
+                    raise DropItem(f"Property excluded due to floor/elevator criteria: {p_id}")
+            except (ValueError, TypeError):
+                # If we can't convert to int, don't exclude based on this criteria
+                print(f"Could not parse planta/ascensor for {p_id}: planta={planta}, ascensor={ascensor}")
+                
+            try:
+                # Verificar si el item ya existe en la base de datos
+                self.cursor.execute("SELECT 1 FROM propiedades WHERE p_id = %s", (p_id,))
+                result = self.cursor.fetchone()
+
+                if result:
+                    # Si ya existe el registro, actualizamos el contenido
+                    print(f"Item already exists. Updating item: {p_id}")
+
+                    self.cursor.execute('''
+                        UPDATE propiedades
+                        SET nombre = %s,
+                            fecha_crawl = %s,
+                            precio = %s,
+                            metros = %s,
+                            habitaciones = %s,
+                            planta = %s,
+                            ascensor = %s,
+                            poblacion = %s,
+                            url = %s,
+                            descripcion = %s,
+                            estatus = %s
+                        WHERE p_id = %s
+                    ''', (
+                        item.get('nombre'),
+                        item.get('fecha_crawl'),  # Use fecha_crawl for fecha_updated to maintain compatibility
+                        item.get('precio'),
+                        item.get('metros'),
+                        item.get('habitaciones'),
+                        item.get('planta'),
+                        item.get('ascensor'),
+                        item.get('poblacion'),
+                        item.get('url'),
+                        item.get('descripcion'),
+                        item.get('estatus'),
+                        p_id
+                    ))
+
+                    # Confirmar cambios después de la actualización
+                    self.connection.commit()
+                    print(f"Item updated successfully: {p_id}")
+
+                else:
+                    # Insert item into database
+                    self.cursor.execute("""
+                        INSERT INTO propiedades (p_id, nombre, fecha_crawl, precio, metros, habitaciones, planta, ascensor, poblacion, url, descripcion, estatus)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                    """, (
+                        p_id,
+                        item.get('nombre'),
+                        item.get('fecha_crawl'),  # Use fecha_crawl for fecha_updated to maintain compatibility
+                        item.get('precio'),
+                        item.get('metros'),
+                        item.get('habitaciones'),
+                        item.get('planta'),
+                        item.get('ascensor'),
+                        item.get('poblacion'),
+                        item.get('url'),
+                        item.get('descripcion'),
+                        item.get('estatus')
+                    ))
+
+                    # Confirmar cambios en la base de datos
+                    self.connection.commit()
+                    print(f"Item inserted successfully: {p_id}")
+
+            except psycopg2.Error as e:
+                print(f"Database error: {e}")
+                self.connection.rollback()
+                raise DropItem(f"Database error: {e}")
+            
+            except Exception as e:
+                print(f"Unexpected error: {e}")
+                raise DropItem(f"Unexpected error: {e}")
 
         return item
