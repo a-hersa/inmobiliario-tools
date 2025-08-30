@@ -6,9 +6,9 @@ from scrapy.crawler import CrawlerProcess
 from scrapy.utils.project import get_project_settings
 from inmobiliario.spiders.propiedades import PropiedadesSpider
 
-DB_USER = os.getenv("POSTGRES_USER", "mi_user")
-DB_PASS = os.getenv("POSTGRES_PASSWORD", "mi_pass")
-DB_NAME = os.getenv("POSTGRES_DB", "inmobiliario_db")
+DB_USER = os.getenv("POSTGRES_USER")
+DB_PASS = os.getenv("POSTGRES_PASSWORD")
+DB_NAME = os.getenv("POSTGRES_DB")
 DB_HOST = "postgres"
 
 app = FastAPI()
