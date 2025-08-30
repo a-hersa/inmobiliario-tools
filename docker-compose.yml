@@ -41,7 +41,7 @@ services:
     # Esto mantiene el contenedor en ejecución sin hacer nada.
     environment: 
       - SCRAPINGANT_API_KEY=${SCRAPINGANT_API_KEY}
-      - POSTGRES_DB=inmobiliario_db
+      - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - TZ=Europe/Madrid
