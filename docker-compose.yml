@@ -34,9 +34,9 @@ services:
       postgres:
         condition: service_healthy
   
-  scrapy:
-    image: ahersa/scrapy-inmobiliario:latest
-    container_name: inmobiliario-scrapy
+  fastapi_scrapy:
+    build: ./fastapi_scrapy
+    container_name: inmobiliario-fastapi_scrapy
     restart: unless-stopped
     # Esto mantiene el contenedor en ejecución sin hacer nada.
     environment: 
@@ -47,7 +47,8 @@ services:
       - TZ=Europe/Madrid
     networks:
       - flask_network
-    command: tail -f /dev/null 
+    ports:
+      - 8000:8000
     depends_on:
       postgres:
         condition: service_healthy

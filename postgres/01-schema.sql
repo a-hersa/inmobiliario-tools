@@ -24,7 +24,16 @@ CREATE INDEX IF NOT EXISTS idx_propiedades_fecha_crawl ON propiedades (fecha_cra
 -- Create municipios table for URL storage
 CREATE TABLE IF NOT EXISTS municipios (
     id SERIAL PRIMARY KEY,
+    nombre VARCHAR(255),
     url VARCHAR(500) UNIQUE NOT NULL,
     spider_name VARCHAR(100) NOT NULL,
     created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS start_urls (
+    id SERIAL PRIMARY KEY,
+    municipio_id INT NOT NULL REFERENCES municipios(id) ON DELETE CASCADE,
+    spider_name VARCHAR(100) NOT NULL,
+    created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (municipio_id, spider_name)  -- una URL puede estar activa en un solo spider
 );
